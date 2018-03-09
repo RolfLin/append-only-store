@@ -18,6 +18,7 @@ import indexingTopology.util.shape.TrackItem;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class TrackNew {
             String startTimeStr = jsonObject.getString("startTime");
             String endTimeStr = jsonObject.getString("endTime");
             if (startTimeStr.equals("null") && endTimeStr.equals("null")) {
-                startTimeStr = "2017-02-01 00:00:00";
-                endTimeStr = "2017-02-07 00:00:00";
+                startTimeStr = "2018-02-01 00:00:00";
+                endTimeStr = "2018-02-07 00:00:00";
             } else if (endTimeStr.equals("null") && !startTimeStr.equals("null")) {
                 endTimeStr = startTimeStr;
             }
@@ -123,7 +124,7 @@ public class TrackNew {
                     queryResult.add(jsonFromTuple);
     //                        System.out.println(jsonFromTuple);
                 }
-    //                    System.out.println(tuples.size() + " tuples.");
+                        System.out.println("Amount : " + tuples.size() + " tuples.");
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

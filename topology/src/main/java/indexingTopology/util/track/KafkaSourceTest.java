@@ -50,7 +50,8 @@ public class KafkaSourceTest {
 //        FrequencyRestrictor restrictor = new FrequencyRestrictor(1000, 5);
 //        RateTracker rateTracker = new RateTracker(1000, 5);
 
-        int batchSize = 100;
+        int batchSize = 1000;
+//        int batchSize = 2;
 
         Thread emittingThread = null;
         emittingThread = new Thread(() -> {
@@ -72,59 +73,60 @@ public class KafkaSourceTest {
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date date = formatter.parse(sDateTime); // 把String类型转换为Date类型
                         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-                        if (i  < 40) {
-                            Random random = new Random();
-                            int randomValue = random.nextInt(5000) + 1;
-                            String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
-                                    "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
-                                    "\"devid\":\"" + getRandomDevid() +
+                        if (i < ( batchSize / 5)) {
+//                        if (i < 5) {
+                                Random random = new Random();
+                                int randomValue = random.nextInt(3) + 1;
+                                String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
+                                        "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
+                                        "\"devid\":\"" + getRandomDevid() +
 //                                    "\",\"city\":\"" + getRandomCity() +    // exchange the city value
-                                    "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
-                                    "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
-                                    ",\"latitude\":" + getRandomCarLocation(carLocationList.get(randomValue),5)+ "," +
+                                        "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
+                                        "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
+                                        ",\"latitude\":" + getRandomCarLocation(carLocationList.get(randomValue),5)+ "," +
 //                                    "\"altitude\":\"" + getRandomCarLocation(carLocationList.get(randomValue),6) + "\"," +
-                                    "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
-                                    "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
-                                    "\",\"locationtime\":\"" + getRandomCarLocation(carLocationList.get(randomValue),3) +
-                                    "\",\"workstate\":\"" + getRandomWorkstate() + "\"," +
-                                    "\"hphm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),2) +
-                                    "\",\"jzlx\":\"" + getRandomJzlx() +
-                                    "\",\"jybh\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"," +
-                                    "\"jymc\":\"" + nameList.get(randomValue) +
-                                    "\",\"reserve1\":\"" + getRandomReserve1() +
-                                    "\",\"ssdwdm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),3)+
-                                    "\",\"ssdwmc\":\"a\"," +
-                                    "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"}";
-                            System.out.println(Msg);
-                            kafkaBatchMode.send(i, Msg);
-                        } else {
-                            Random random = new Random();
-                            int randomValue = random.nextInt(5000) + 1;
+                                        "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
+                                        "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
+                                        "\",\"locationtime\":\"" + getRandomCarLocation(carLocationList.get(randomValue),3) +
+                                        "\",\"workstate\":\"" + getRandomWorkstate() + "\"," +
+                                        "\"hphm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),2) +
+                                        "\",\"jzlx\":\"" + getRandomJzlx() +
+                                        "\",\"jybh\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"," +
+                                        "\"jymc\":\"" + nameList.get(randomValue) +
+                                        "\",\"reserve1\":\"" + getRandomReserve1() +
+                                        "\",\"ssdwdm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),3)+
+                                        "\",\"ssdwmc\":\"a\"," +
+                                        "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"}";
+                                System.out.println(Msg);
+                                kafkaBatchMode.send(i, Msg);
+                            } else {
+                                Random random = new Random();
+                                int randomValue = random.nextInt(5000) + 1;
 //                            String Msg = "{\"devbtype\":" + 11 + ",\"devstype\":" + 123 + ",\"devid\":\"75736331\",\"city\":\"4406\",\"longitude\":" + car.x + ",\"latitude\":" + car.y
 //                                    + ",\"altitude\":\"0\"," +
 //                                    "\"speed\":\"0\",\"direction\":\"0\",\"locationtime\":\"" + currentTime + "\",\"workstate\":\"" + (random.nextInt(5) + 1) +"\",\"clzl\":\"\",\"hphm\":\"\",\"jzlx\":\"" + (random.nextInt(8) + 1) +"\",\"jybh\":\"100011\"," +
 //                                    "\"jymc\":\"" + getRandomName() + "\",\"lxdh\":\"13576123212\",\"dth\":\"\",\"reserve1\":\"1\",\"reserve2\":\"\",\"reserve3\":\"\",\"ssdwdm\":\"440100000000\"," +
 //                                    "\"ssdwmc\":\"a\",\"teamno\":\"44010001\"}";
-                            String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
-                                    "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
-                                    "\"devid\":\"" + getRandomCarDetial(carDetailList.get(randomValue), 1) +
+                                String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
+                                        "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
+                                        "\"devid\":\"" + cutCarDevid(carDetailList.get(randomValue), 1) +
 //                                    "\",\"city\":\"" + getRandomCity() +    // exchange the city value
-                                     "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
-                                    "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
-                                    ",\"latitude\":" + getRandomCarLocation(carLocationList.get(randomValue),5)+ "," +
+                                        "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
+                                        "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
+                                        ",\"latitude\":" + getRandomCarLocation(carLocationList.get(randomValue),5)+ "," +
 //                                    "\"altitude\":\"" + getRandomCarLocation(carLocationList.get(randomValue),6) + "\"," +
-                                    "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
-                                    "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
-                                    "\",\"locationtime\":\"" + getRandomCarLocation(carLocationList.get(randomValue),3) +
-                                    "\",\"workstate\":\"" + getRandomWorkstate() + "\"," +
-                                    "\"hphm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),2) +
-                                    "\",\"jzlx\":\"" + getRandomJzlx() +
-                                    "\",\"jybh\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"," +
-                                    "\"jymc\":\"" + nameList.get(randomValue) +
-                                    "\",\"reserve1\":\"" + getRandomReserve1() +
-                                    "\",\"ssdwdm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),3)+
-                                    "\",\"ssdwmc\":\"a\"," +
-                                    "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"}";
+                                        "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
+                                        "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
+                                        "\",\"locationtime\":\"" + getRandomCarLocation(carLocationList.get(randomValue),3) +
+                                        "\",\"workstate\":\"" + getRandomWorkstate() + "\"," +
+                                        "\"hphm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),2) +
+                                        "\",\"jzlx\":\"" + getRandomJzlx() +
+                                        "\",\"jybh\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"," +
+                                        "\"jymc\":\"" + nameList.get(randomValue) +
+                                        "\",\"reserve1\":\"" + getRandomReserve1() +
+                                        "\",\"ssdwdm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),3)+
+                                        "\",\"ssdwmc\":\"a\"," +
+                                        "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"}";
 
 //                            String Msg = "{\"devbtype\":" + devbtype + ",\"devstype\":" + 123 + ",\"devid\":\"" + devid + "\",\"city\":\"" + city + "\",\"longitude\":" + 113.123123 + ",\"latitude\":" + car.x
 //                                    + ",\"altitude\":" + car.y + "," +
@@ -132,16 +134,17 @@ public class KafkaSourceTest {
 //                                    "\"jymc\":\"陈国基\",\"lxdh\":\"13576123212\",\"dth\":\"\",\"reserve1\":\"1\",\"reserve2\":\"\",\"reserve3\":\"\",\"ssdwdm\":\"440100000000\"," +
 //                                    "\"ssdwmc\":\"a\",\"teamno\":\"44010001\"}";
 
-                            //                            String Msg = "{\"devbtype\":" + 10 + ",\"devstyaasdpe\":\"123\",\"devid\":\"0x0101\",\"city\":\"4401\",\"longitude\":"+ 80.8888888888 + ",\"latitude\":" + 80.8888888888 + ",\"altitude\":2000.0," +
+                                //                            String Msg = "{\"devbtype\":" + 10 + ",\"devstyaasdpe\":\"123\",\"devid\":\"0x0101\",\"city\":\"4401\",\"longitude\":"+ 80.8888888888 + ",\"latitude\":" + 80.8888888888 + ",\"altitude\":2000.0," +
 //                                    "\"speed\":50.0,\"direction\":40.0,\"locationtime\":\""+ currentTime +"\",\"workstate\":1,\"clzl\":\"巡逻车\",\"hphm\":\"粤A39824\",\"jzlx\":1,\"jybh\":\"100011\"," +
 //                                    "\"jymc\":\"陈国基\",\"lxdh\":\"13576123212\",\"dth\":\"SG0000000352\",\"reserve1\":null,\"reserve2\":\"\",\"reserve3\":\"\",\"ssdwdm\":\"440100000000\"," +
 //                                    "\"ssdwmc\":\"广州市\",\"teamno\":\"44010001\"}";
 //                            String   Msg = "{\"devbtype\":" + 10 + ",\"devstype\":\"123\"}";
 
-                            System.out.println(System.currentTimeMillis());
+                                System.out.println(System.currentTimeMillis());
 //                            System.out.println(currentTime);
-                            System.out.println(Msg);
-                            kafkaBatchMode.send(i, Msg);
+                                System.out.println(Msg);
+                                kafkaBatchMode.send(i, Msg);
+                            }
                         }
                         //                        this.producer.send(new ProducerRecord<String, String>("consumer",
                         //                                String.valueOf(i), "{\"employees\":[{\"firstName\":\"John\",\"lastName\":\"Doe\"},{\"firstName\":\"Anna\",\"lastName\":\"Smith\"},{\"firstName\":\"Peter\",\"lastName\":\"Jones\"}]}"));
@@ -154,12 +157,13 @@ public class KafkaSourceTest {
 
                         //                        System.out.println("Sent msg number " + totalNumber);
                         //                }
-                    }
+//                    }
                     kafkaBatchMode.flush();
                     //            producer.close();
                     System.out.println("Kafka Producer send msg over,cost time:" + (System.currentTimeMillis() - start) + "ms");
 
-                    Thread.sleep(60000);
+//                    Thread.sleep(3600 * 30 * 1000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -188,6 +192,12 @@ public class KafkaSourceTest {
     String getRandomCarLocation(String locationList,int num){
         String location[] = locationList.split("//");
         return location[num-1]; // ben
+    }
+
+    String cutCarDevid(String locationList,int num){
+        String carDevid = getRandomCarDetial(locationList, num);
+        String subCarDevid = carDevid.substring(5);
+        return subCarDevid; // ben
     }
 
     String getCityIDByName(String locationList, int num){

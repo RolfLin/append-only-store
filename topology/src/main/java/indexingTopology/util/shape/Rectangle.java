@@ -66,8 +66,6 @@ public class Rectangle implements Shape, Serializable{
             if ((point.jzlx == this.jzlx && point.workstate == this.workstate) || (this.jzlx == 0 && point.workstate == this.workstate)
                     || (point.jzlx == this.jzlx && this.workstate == 0)) {
                 return true;
-            }else {
-                return false;
             }
         }
         return false;

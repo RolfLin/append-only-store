@@ -92,5 +92,8 @@ public class LocationFile {
         for(int i = 0;i < nameList.size(); i++){
             System.out.println(carPlateList.get(i) + " " + nameList.get(i));
         }
+
+        String cardevid = "123456";
+        System.out.println(cardevid.substring(1));
     }
 }

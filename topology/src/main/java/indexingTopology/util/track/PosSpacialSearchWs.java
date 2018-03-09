@@ -82,8 +82,8 @@ public class PosSpacialSearchWs {
             String startTimeStr = jsonObject.getString("startTime");
             String endTimeStr = jsonObject.getString("endTime");
             if (startTimeStr.equals("null") && endTimeStr.equals("null")) {
-                startTimeStr = "2017-02-01 00:00:00";
-                endTimeStr = "2017-02-07 00:00:00";
+                startTimeStr = "2018-02-01 00:00:00";
+                endTimeStr = "2018-02-07 00:00:00";
             } else if (endTimeStr.equals("null") && !startTimeStr.equals("null")) {
                 endTimeStr = startTimeStr;
             }
@@ -243,9 +243,9 @@ public class PosSpacialSearchWs {
                 try {
                     //统计查询
                     QueryResponse response = queryClient.query(queryRequest);
-                    System.out.println(response.toString());
+//                    System.out.println(response.toString());
                     List<DataTuple> tuples = response.getTuples();
-                    System.out.println(tuples.size());
+//                    System.out.println(tuples.size());
                     queryResult = new JSONArray();
                     JSONObject jsonFromTuple = null;
                     if (groupId.equals("hour") || groupId.equals("min")) {
@@ -274,8 +274,8 @@ public class PosSpacialSearchWs {
                             queryResult.add(jsonFromTuple);
                         }
                     }
-                    System.out.println(jsonFromTuple);
-//                    System.out.println(tuples.size() + " tuples.");
+//                    System.out.println(jsonFromTuple);
+                    System.out.println("Amount : " + tuples.size() + " tuples.");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
