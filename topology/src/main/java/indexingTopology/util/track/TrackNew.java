@@ -10,10 +10,7 @@ import indexingTopology.api.client.QueryResponse;
 import indexingTopology.common.data.DataSchema;
 import indexingTopology.common.data.DataTuple;
 import indexingTopology.common.logics.DataTuplePredicate;
-import indexingTopology.util.shape.Circle;
-import indexingTopology.util.shape.Circle2;
 import indexingTopology.util.shape.Point;
-import indexingTopology.util.shape.TrackItem;
 
 import java.io.IOException;
 import java.text.ParseException;
