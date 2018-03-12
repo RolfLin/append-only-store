@@ -1,5 +1,6 @@
 package indexingTopology.util.track;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
@@ -11,13 +12,14 @@ import indexingTopology.common.data.DataSchema;
 import indexingTopology.common.data.DataTuple;
 import indexingTopology.common.logics.DataTuplePredicate;
 import indexingTopology.util.shape.Circle;
-import indexingTopology.util.shape.Circle2;
 import indexingTopology.util.shape.Point;
 import indexingTopology.util.shape.TrackItem;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -43,7 +45,34 @@ public class TrackNew {
             String type = jsonObject.get("type").toString();
             int devbtype = Integer.parseInt(jsonObject.get("devbtype").toString());
             String devid = jsonObject.get("devid").toString();
-            String city = jsonObject.get("city").toString();
+
+            LineItem user = JSON.parseObject(String.valueOf(jsonObject),LineItem.class);
+            String city[] = user.getCity();
+            System.out.println(city[0]);
+//            JSONArray cityArray = jsonObject.getJSONArray("city");
+//            String city[] = new String[cityArray.size()];
+//            for(int i = 0; i < cityArray.size(); i++){
+//                city[i] = String.valueOf(cityArray.get(i));
+//            }
+
+            JSONArray optionArray = jsonObject.getJSONArray("options");
+            ArrayList<String> options = new ArrayList<>();
+            for(int i = 0; i < optionArray.size(); i++){
+                System.out.println(optionArray.get(i));
+                options.add(String.valueOf(optionArray.get(i)));
+            }
+
+//            String options[] = user.getOptions();
+//            System.out.println(options[0]);
+//            List<String> li = Arrays.asList(options);
+
+//            JSONArray optionArray = jsonObject.getJSONArray("options");
+//            ArrayList<String> options = new ArrayList<>();
+//            for(int i = 0; i < optionArray.size(); i++){
+//                options.add(String.valueOf(optionArray.get(i)));
+//            }
+
+
 //            double longitude = Double.parseDouble(jsonObject.get("longitude").toString());
 //            double latitude = Double.parseDouble(jsonObject.get("latitude").toString());
 //            double radius = Double.parseDouble(jsonObject.get("radius").toString());
@@ -89,7 +118,8 @@ public class TrackNew {
 //            Circle circle = new Circle(longitude, latitude, radius);
 //            Circle2 circle2 = new Circle2(longitude, latitude, radius);
 //            TrackItem trackItem = new TrackItem(longitude, latitude, radius);
-            LineItem lineItem = new LineItem(city, devbtype, devid);
+            LineItem lineItem = new LineItem(city, devbtype, devid,options);
+            System.out.println("city: " + lineItem.getCity()[0]);
 //            externalLeftTop = new Point(circle.getExternalRectangle().getLeftTopX(), circle.getExternalRectangle().getLeftTopY());
 //            externalRightBottom = new Point(circle.getExternalRectangle().getRightBottomX(), circle.getExternalRectangle().getRightBottomY());
 //            int a = 0;
@@ -119,7 +149,7 @@ public class TrackNew {
                 List<DataTuple> tuples = response.getTuples();
                 queryResult = new JSONArray();
                 for (DataTuple tuple : tuples) {
-                    JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuple);
+                    JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuple, options);
                     queryResult.add(jsonFromTuple);
     //                        System.out.println(jsonFromTuple);
                 }
@@ -154,6 +184,23 @@ public class TrackNew {
             return result;
         }catch (JSONException e){
             e.printStackTrace();
+            JSONObject queryResponse = new JSONObject();
+            queryResponse.put("success", false);
+            queryResponse.put("result", null);
+            queryResponse.put("errorCode", 1002);
+            queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
+            String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
+            return result;
+        }catch (ClassCastException e){
+            e.printStackTrace();
+            JSONObject queryResponse = new JSONObject();
+            queryResponse.put("success", false);
+            queryResponse.put("result", null);
+            queryResponse.put("errorCode", 1002);
+            queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
+            String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
+            return result;
+        }catch (Exception e){
             e.printStackTrace();
             JSONObject queryResponse = new JSONObject();
             queryResponse.put("success", false);

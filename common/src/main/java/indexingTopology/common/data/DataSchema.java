@@ -417,13 +417,14 @@ public class DataSchema implements Serializable {
     }
 
 
-    public JSONObject getJsonFromDataTupleWithoutZcode(DataTuple tuple) { // filter zcode attribute and alter timestamp schema
+    public JSONObject getJsonFromDataTupleWithoutZcode(DataTuple tuple, ArrayList<String> options) { // filter zcode attribute and alter timestamp schema
         int len = tuple.size();
         JSONObject jsonObject = new JSONObject();
         for (int i = 0; i < len; i++) {
             if(getFieldName(i).equals("zcode")){
                 continue;
             }
+            String currentTime = "";
             if(getFieldName(i).equals(temporalField)){
                 Date dateOld = new Date((long)tuple.get(i)); // 根据long类型的毫秒数生命一个date类型的时间
                 String sDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateOld); // 把date类型的时间转换为string
@@ -434,11 +435,25 @@ public class DataSchema implements Serializable {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-                jsonObject.put(getFieldName(i), currentTime);
+                currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
             }
-            else{
-                jsonObject.put(getFieldName(i), tuple.get(i));
+            if(options.get(0).equals("null")){
+                if(currentTime == ""){
+                    jsonObject.put(getFieldName(i), tuple.get(i)); // put the time attribute with string schema
+                }else{
+                    jsonObject.put(getFieldName(i), currentTime);
+                }
+            } else {
+                for(String option : options){
+                    if(option.equals(getFieldName(i))){
+                        if(currentTime == ""){
+                            jsonObject.put(getFieldName(i), tuple.get(i)); // put the time attribute with string schema
+                        }else{
+                            jsonObject.put(getFieldName(i), currentTime);
+                        }
+                        break;
+                    }
+                }
             }
         }
         return jsonObject;

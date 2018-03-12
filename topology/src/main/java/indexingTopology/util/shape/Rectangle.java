@@ -9,8 +9,8 @@ public class Rectangle implements Shape, Serializable{
 
     private double leftTopX, leftTopY;
     private double rightBottomX, rightBottomY;
-    private int jzlx;
-    private int workstate;
+    private int jzlx[];
+    private int workstate[];
 
     public Rectangle(Point leftTop, Point rightBottom) {
         this.leftTopX = Math.min(leftTop.x, rightBottom.x);
@@ -19,7 +19,7 @@ public class Rectangle implements Shape, Serializable{
         this.rightBottomY = Math.min(leftTop.y, rightBottom.y);
     }
 
-    public Rectangle(Point leftTop, Point rightBottom, int jzlx, int workstate) {
+    public Rectangle(Point leftTop, Point rightBottom, int jzlx[], int workstate[]) {
         this.leftTopX = leftTop.x;
         this.leftTopY = leftTop.y;
         this.rightBottomX = rightBottom.x;
@@ -44,7 +44,7 @@ public class Rectangle implements Shape, Serializable{
         return rightBottomY;
     }
 
-    public int getJzlx() { return jzlx; }
+    public int[] getJzlx() { return jzlx; }
 
     @Override
     public boolean checkIn(Point point) {
@@ -63,12 +63,23 @@ public class Rectangle implements Shape, Serializable{
     public boolean specialCheckIn(Point point) {
         double pointX = point.x, pointY = point.y;
         if((pointX <= rightBottomX && pointX >= leftTopX) && (pointY <= leftTopY && pointY >= rightBottomY)) {
-            if ((point.jzlx == this.jzlx && point.workstate == this.workstate) || (this.jzlx == 0 && point.workstate == this.workstate)
-                    || (point.jzlx == this.jzlx && this.workstate == 0)) {
-                return true;
-            }else {
-                return false;
+            boolean b1 = false, b2 = false;
+            for(int i = 0; i < this.jzlx.length; i++){
+                if(this.jzlx[i] == point.jzlx){
+                    b1 = true;
+                    break;
+                }
             }
+            for(int i = 0; i < this.workstate.length; i++){
+                if(this.workstate[i] == point.workstate){
+                    b2 = true;
+                    break;
+                }
+            }
+            if( (b1 && b2) || (b1 & this.workstate[0] == 0) || (this.workstate[0] == 0 & b2)){
+                return true;
+            }
+            else return false;
         }
         return false;
     }

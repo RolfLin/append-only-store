@@ -28,10 +28,13 @@ public class AdminMessage {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public JSONObject getWarningMessage(@DefaultValue("null") @QueryParam("message") String message) {
-        String str = message.replace('[','{');
-        str = str.replace(']','}');
+//        String str = message;
+//        str = str.replace(']','}');
+        StringBuilder sb = new StringBuilder(message);
+        sb.replace(0,1,"{");
+        sb.replace(message.length()-1,message.length(),"}");
 
-        System.out.println(str);
+        System.out.println(sb.toString());
 //        TrackSpacialSearchWs trackSpacialSearch = new TrackSpacialSearchWs();
 //        String result = trackSpacialSearch.services(null,str);
 
@@ -42,9 +45,9 @@ public class AdminMessage {
 //        String result = trackSearchWs.services(null,str);
 
         PosSpacialSearchWs posSpacialSearchWs = new PosSpacialSearchWs();
-        String result = posSpacialSearchWs.service(null, str);
+        String result = posSpacialSearchWs.service(null, sb.toString());
         System.out.println(result);
-        System.out.println(str);
+//        System.out.println(str);
 //        if (message.equals("null")) {
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put("message", NaiveQueryImpl.instance().getAdminMessage());

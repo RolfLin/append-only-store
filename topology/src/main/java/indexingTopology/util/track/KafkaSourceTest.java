@@ -74,7 +74,7 @@ public class KafkaSourceTest {
                         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
                         if (i  < 40) {
                             Random random = new Random();
-                            int randomValue = random.nextInt(5000) + 1;
+                            int randomValue = random.nextInt(3) + 1;
                             String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
                                     "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
                                     "\"devid\":\"" + getRandomDevid() +
@@ -107,7 +107,7 @@ public class KafkaSourceTest {
 //                                    "\"ssdwmc\":\"a\",\"teamno\":\"44010001\"}";
                             String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
                                     "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
-                                    "\"devid\":\"" + getRandomCarDetial(carDetailList.get(randomValue), 1) +
+                                    "\"devid\":\"" + cutCarDevid(carDetailList.get(randomValue), 1) +
 //                                    "\",\"city\":\"" + getRandomCity() +    // exchange the city value
                                      "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
                                     "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
@@ -178,6 +178,12 @@ public class KafkaSourceTest {
 //                }
 //            }
 //        }).start();
+    }
+
+    String cutCarDevid(String locationList,int num){
+        String carDevid = getRandomCarDetial(locationList, num);
+        String subCarDevid = carDevid.substring(5);
+        return subCarDevid; // ben
     }
 
     String getRandomCarDetial(String locationList,int num){

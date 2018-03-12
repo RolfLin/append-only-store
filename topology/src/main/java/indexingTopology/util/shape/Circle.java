@@ -10,8 +10,8 @@ public class Circle implements Shape, Serializable{
     private double longitude;
     private double latitude;
     private double radius;
-    private int jzlx;
-    private int workstate;
+    private int jzlx[];
+    private int workstate[];
 
     public Circle(double longitude, double latitude, double radius) {
         this.longitude = longitude;
@@ -19,7 +19,7 @@ public class Circle implements Shape, Serializable{
         this.radius = radius;
     }
 
-    public Circle(double longitude, double latitude, double radius, int jzlx, int workstate) {
+    public Circle(double longitude, double latitude, double radius, int jzlx[], int workstate[]) {
         this.longitude = longitude;
         this.latitude = latitude;
         this.radius = radius;
@@ -53,11 +53,23 @@ public class Circle implements Shape, Serializable{
         double pointX = point.x, pointY = point.y;
         double len = Math.sqrt(Math.pow(pointX - longitude, 2) + Math.pow(pointY - latitude, 2));
         if(radius >= len) {
-            if ((point.jzlx == this.jzlx && point.workstate == this.workstate) || (this.jzlx == 0 && point.workstate == this.workstate)
-                    || (point.jzlx == this.jzlx && this.workstate == 0)) {
+            boolean b1 = false, b2 = false;
+            for(int i = 0; i < this.jzlx.length; i++){
+                if(this.jzlx[i] == point.jzlx){
+                    b1 = true;
+                    break;
+                }
+            }
+            for(int i = 0; i < this.workstate.length; i++){
+                if(this.workstate[i] == point.workstate){
+                    b2 = true;
+                    break;
+                }
+            }
+            if( (b1 && b2) || (b1 & this.workstate[0] == 0) || (this.workstate[0] == 0 & b2)){
                 return true;
             }
-            return false;
+            else return false;
         }
         return false;
     }

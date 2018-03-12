@@ -73,6 +73,18 @@ public class SearchTest {
 //                    System.out.println(result);
                     break;
                 }
+                case "8" : { // test track with options
+//                    String searchPolygon = "{\"type\":\"polygon\",\"leftTop\":null,\"rightBottom\":null,\"geoStr\":[\"70 70\",\"85 80\",\"90 75\",\"85 70\",\"70 70\"],\"lon\":null,\"lat\":null,\"radius\":null}";
+//                    String searchPolygon = "{\"type\":\"polygon\",\"leftTop\":null,\"rightBottom\":null,\"geoSt" +
+//                            "r\":[\"80 60\",\"120 60\",\"120 80\",\"80 80\"],\"lon\":null,\"lat\":null,\"radius\":null}";
+                    String searchRectangle = "{\"type\":\"rectangle\",\"searchType\":\"special\",\"jzlx\":2,\"workstate\":2,\"leftTop\":\"10,1000\",\"rightBottom\":\"1000,10\"," +
+                            "\"geoStr\":null,\"longitude\":null,\"latitude\":null,\"radius\":null}";
+                    String searchStr = "{\"type\":\"line\",\"devid\":\"81905\",\"startTime\":\"2017-02-01 00:00:00\",\"endTime\":\"2017-02-07 00:00:00\",\"city\":[\"4406\"],\"devbtype\":22,\"function\":\"null\",\"options\":[\"devid\"]}";
+                    TrackNew trackNew = new TrackNew();
+                    String result = trackNew.service(null,searchStr);
+                    System.out.println(result);
+                    break;
+                }
                 default : break;
             }
         }

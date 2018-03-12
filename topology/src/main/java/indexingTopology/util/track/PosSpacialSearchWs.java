@@ -23,10 +23,12 @@ import indexingTopology.util.shape.Polygon;
 import indexingTopology.util.shape.Rectangle;
 import org.w3c.dom.css.Rect;
 import scala.collection.parallel.ParIterableLike;
+import sun.plugin.javascript.JSObject;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
@@ -60,19 +62,38 @@ public class PosSpacialSearchWs {
                 return result;
             }
             /**
-             * 特殊条件查询
+             * search the specified column
              */
 
-            int jzlx = jsonObject.getInteger("jzlx"); //车辆类型
-            int workstate = jsonObject.getInteger("workstate"); //工作状态
+            JSONArray optionArray = jsonObject.getJSONArray("options");
+            ArrayList<String> options = new ArrayList<>();
+            for(int i = 0; i < optionArray.size(); i++){
+                System.out.println(optionArray.get(i));
+                options.add(String.valueOf(optionArray.get(i)));
+            }
+
             /**
-             * 统计查询
+             * specified conditions search
+             */
+
+            JSONArray jzlxArray = jsonObject.getJSONArray("jzlx");
+            int jzlx[] = new int[jzlxArray.size()]; // 车辆类型
+            JSONArray workstateArray = jsonObject.getJSONArray("jzlx");
+            int workstate[] = new int[workstateArray.size()]; // 工作状态
+            for(int i = 0; i < jzlxArray.size(); i++){
+                jzlx[i] = (int)jzlxArray.get(i);
+            }
+            for(int i = 0; i < workstateArray.size(); i++){
+                workstate[i] = (int)workstateArray.get(i);
+            }
+
+
+//            int jzlx = jsonObject.getInteger("jzlx"); //车辆类型
+//            int workstate = jsonObject.getInteger("workstate"); //工作状态
+            /**
+             * search statistics
              */
             String groupId = jsonObject.getString("function");
-
-            /**
-             * 获取时间，没有的话设为默认一天
-             */
 
 
 //            long startTime = jsonObject.getLong("startTime");
@@ -113,6 +134,10 @@ public class PosSpacialSearchWs {
             outputSchema = aggregator.getOutputDataSchema();
             DataTupleEquivalentPredicateHint predicateHint = null;
 
+//             shape subquery
+//            JSONObject subJSONObject = jsonObject.getJSONObject("subquery");
+
+
             switch (type) {
                 case "rectangle" : {
                     p = Pattern.compile("^\\-?[0-9]+\\.?[0-9]*+\\,\\-?[0-9]+\\.?[0-9]*");
@@ -125,7 +150,7 @@ public class PosSpacialSearchWs {
                         break;
                     }
                     Rectangle rectangle;
-                    if (jzlx != 0 || workstate != 0) { // Query conditions
+                    if (jzlx[0] != 0 || workstate[0] != 0) { // Query conditions
                         rectangle = initSpecialRectangel(rectLeftTop, rectRightBottom, jzlx, workstate);
                     }else {
                         rectangle = initRectangel(rectLeftTop, rectRightBottom);
@@ -143,7 +168,7 @@ public class PosSpacialSearchWs {
                         System.out.println(queryResponse);
                         return queryResponse.toString();
                     }
-                    if (jzlx != 0 || workstate != 0) {
+                    if (jzlx[0] != 0 || workstate[0] != 0) {
                         predicate = t -> rectangle.specialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t), (Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
                     }else {
                         predicate = t -> rectangle.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)));
@@ -181,7 +206,7 @@ public class PosSpacialSearchWs {
                         circleRadius += 10;
                     }
                     Circle circle;
-                    if (jzlx != 0 || workstate != 0) {
+                    if (jzlx[0] != 0 || workstate[0] != 0) {
                         System.out.println("Query with workstate or jzlx");
                         circle = initSpecialCircle(longitude, latitude, circleRadius, jzlx, workstate);
                     }else {
@@ -192,7 +217,7 @@ public class PosSpacialSearchWs {
                     externalLeftTop = new Point(circle.getExternalRectangle().getLeftTopX(), circle.getExternalRectangle().getLeftTopY());
                     externalRightBottom = new Point(circle.getExternalRectangle().getRightBottomX(), circle.getExternalRectangle().getRightBottomY());
 
-                    if (jzlx != 0 || workstate != 0) {
+                    if (jzlx[0] != 0 || workstate[0] != 0) {
                         System.out.println("SpecialCheckIn with workstate or jzlx");
                         predicate = t -> circle.SpecialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
                     }else {
@@ -268,7 +293,7 @@ public class PosSpacialSearchWs {
                                 jsonFromTuple.put(groupId, tuple.get(0));
                                 jsonFromTuple.put("nums", tuple.get(1));
                             }else {
-                                jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuple);
+                                jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuple,options);
                             }
 
                             queryResult.add(jsonFromTuple);
@@ -344,7 +369,7 @@ public class PosSpacialSearchWs {
         return circle;
     }
 
-    Circle initSpecialCircle(String longitude, String latitude, double radius, int jzlx, int workstate) {
+    Circle initSpecialCircle(String longitude, String latitude, double radius, int jzlx[], int workstate[]) {
         double circlelon = Double.parseDouble(longitude);
         double circlelat = Double.parseDouble(latitude);
         Circle circle = new Circle(circlelon, circlelat, radius, jzlx, workstate);
@@ -362,7 +387,7 @@ public class PosSpacialSearchWs {
         return rectangle;
     }
 
-    Rectangle initSpecialRectangel(String leftTop, String rightBottom, int jzlx, int workstate) {
+    Rectangle initSpecialRectangel(String leftTop, String rightBottom, int[] jzlx, int[] workstate) {
         double leftTop_x = Double.parseDouble(leftTop.split(",")[0]);
         double leftTop_y = Double.parseDouble(leftTop.split(",")[1]);
         double rightBottom_x = Double.parseDouble(rightBottom.split(",")[0]);

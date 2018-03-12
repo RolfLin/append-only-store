@@ -118,7 +118,7 @@ public class TrackSearchWs implements Serializable{
             queryResponse.put("success", true);
             JSONArray queryResult = new JSONArray();
             for (int i = 0; i < tuples.size(); i++) {
-                JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuples.get(i));
+                JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuples.get(i),null);
                 queryResult.add(jsonFromTuple);
                 System.out.println(jsonFromTuple);
             }

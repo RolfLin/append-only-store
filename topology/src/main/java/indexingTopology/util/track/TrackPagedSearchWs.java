@@ -105,7 +105,7 @@ public class TrackPagedSearchWs implements Serializable{
                     if(i >= tuples.size()){
                         break;
                     }
-                    JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuples.get(i));
+                    JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuples.get(i),null);
                     queryResult.add(jsonFromTuple);
                     System.out.println(jsonFromTuple);
                 }

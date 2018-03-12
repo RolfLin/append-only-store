@@ -81,8 +81,8 @@ public class PosNonSpacialSearchWs {
             QueryResponse response = queryClient.query(queryRequest);
             List<DataTuple> tuples = response.getTuples();
             for (DataTuple tuple : tuples) {
-                queryResult.add(schema.getJsonFromDataTupleWithoutZcode(tuple));
-                System.out.println(schema.getJsonFromDataTupleWithoutZcode(tuple));
+                queryResult.add(schema.getJsonFromDataTupleWithoutZcode(tuple,null));
+                System.out.println(schema.getJsonFromDataTupleWithoutZcode(tuple,null));
             }
             System.out.println("datatuples : " + response.dataTuples.size());
             System.out.println(currentTime2 + "  " + currentTime);
