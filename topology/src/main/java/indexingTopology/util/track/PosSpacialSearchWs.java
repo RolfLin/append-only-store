@@ -137,7 +137,7 @@ public class PosSpacialSearchWs {
 //             shape subquery
 //            JSONObject subJSONObject = jsonObject.getJSONObject("subquery");
 
-
+// test
             switch (type) {
                 case "rectangle" : {
                     p = Pattern.compile("^\\-?[0-9]+\\.?[0-9]*+\\,\\-?[0-9]+\\.?[0-9]*");
