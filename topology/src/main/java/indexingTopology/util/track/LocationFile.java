@@ -116,5 +116,7 @@ public class LocationFile {
         String citytest[] = {"4406"};
         LineItem lineItem = new LineItem(citytest,1,"123",null);
         System.out.println(lineItem.checkConform("4406",1,"123"));
+        String cardevid = "123456";
+        System.out.println(cardevid.substring(1));
     }
 }

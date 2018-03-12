@@ -52,7 +52,7 @@ public class AdminMessage {
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put("message", NaiveQueryImpl.instance().getAdminMessage());
 //            return jsonObject.toString();
-//        } else {
+//        } else
             NaiveQueryImpl.instance().setAdminMessage(message);
 //            JSONObject jsonObject = new JSONObject();
 //            jsonObject.put("response", result);

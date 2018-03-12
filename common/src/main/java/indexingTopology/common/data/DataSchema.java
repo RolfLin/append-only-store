@@ -459,4 +459,37 @@ public class DataSchema implements Serializable {
         return jsonObject;
     }
 
+    public JSONObject getSelectedJsonFromDataTupleWithoutZcode(DataTuple tuple, ArrayList<String> options) { // filter zcode attribute and alter timestamp schema
+        int len = tuple.size();
+        JSONObject jsonObject = new JSONObject();
+        for (int i = 0; i < len; i++) {
+            if(getFieldName(i).equals("zcode")){
+                continue;
+            }
+            if(getFieldName(i).equals(temporalField)){
+                Date dateOld = new Date((long)tuple.get(i)); // 根据long类型的毫秒数生命一个date类型的时间
+                String sDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dateOld); // 把date类型的时间转换为string
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = null; // 把String类型转换为Date类型
+                try {
+                    date = formatter.parse(sDateTime);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                jsonObject.put(getFieldName(i), currentTime);
+            } else if(options != null || options.equals("null")){
+                for(String option : options){
+                    if(option.equals(getFieldName(i))){
+                        jsonObject.put(getFieldName(i),tuple.get(i));
+                        break;
+                    }
+                }
+            } else {
+                jsonObject.put(getFieldName(i), tuple.get(i));
+            }
+        }
+        return jsonObject;
+    }
+
 }
