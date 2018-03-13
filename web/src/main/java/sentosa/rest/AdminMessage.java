@@ -33,8 +33,12 @@ public class AdminMessage {
         StringBuilder sb = new StringBuilder(message);
         sb.replace(0,1,"{");
         sb.replace(message.length()-1,message.length(),"}");
+        String sbStr = sb.toString();
+        sbStr = sbStr.replace('(','{');
+        sbStr = sbStr.replace(')','}');
 
-        System.out.println(sb.toString());
+
+        System.out.println(sbStr);
 //        TrackSpacialSearchWs trackSpacialSearch = new TrackSpacialSearchWs();
 //        String result = trackSpacialSearch.services(null,str);
 
@@ -45,7 +49,7 @@ public class AdminMessage {
 //        String result = trackSearchWs.services(null,str);
 
         PosSpacialSearchWs posSpacialSearchWs = new PosSpacialSearchWs();
-        String result = posSpacialSearchWs.service(null, sb.toString());
+        String result = posSpacialSearchWs.service(null, sbStr);
         System.out.println(result);
 //        System.out.println(str);
 //        if (message.equals("null")) {

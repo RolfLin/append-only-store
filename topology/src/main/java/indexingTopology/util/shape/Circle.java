@@ -1,6 +1,7 @@
 package indexingTopology.util.shape;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Create by zelin on 17-12-5
@@ -12,6 +13,16 @@ public class Circle implements Shape, Serializable{
     private double radius;
     private int jzlx[];
     private int workstate[];
+    private ArrayList<Circle> circleArrayList;
+    private ArrayList<Rectangle> rectangleArrayList;
+
+    public void setCircleArrayList(ArrayList<Circle> circleArrayList) {
+        this.circleArrayList = circleArrayList;
+    }
+
+    public void setRectangleArrayList(ArrayList<Rectangle> rectangleArrayList) {
+        this.rectangleArrayList = rectangleArrayList;
+    }
 
     public Circle(double longitude, double latitude, double radius) {
         this.longitude = longitude;
@@ -66,7 +77,7 @@ public class Circle implements Shape, Serializable{
                     break;
                 }
             }
-            if( (b1 && b2) || (b1 & this.workstate[0] == 0) || (this.workstate[0] == 0 & b2)){
+            if( (b1 && b2) || (b1 & (this.workstate[0] == 0)) || ((this.jzlx[0] == 0) & b2)){
                 return true;
             }
             else return false;
@@ -79,5 +90,26 @@ public class Circle implements Shape, Serializable{
         Point leftTop = new Point(longitude - radius, latitude + radius);
         Point rightBottom = new Point(longitude + radius, latitude - radius);
         return new Rectangle(leftTop, rightBottom);
+    }
+
+    @Override
+    public boolean shapeListCheckIn(Point point,boolean checkSpecial) {
+        boolean checkIn = true;
+        if(checkSpecial){
+            for (Circle circle : this.circleArrayList){
+                checkIn = checkIn & circle.SpecialCheckIn(point);
+            }
+            for (Rectangle rectangle : this.rectangleArrayList){
+                checkIn = checkIn & rectangle.specialCheckIn(point);
+            }
+        }else{
+            for (Circle circle : this.circleArrayList){
+                checkIn = checkIn & circle.checkIn(point);
+            }
+            for (Rectangle rectangle : this.rectangleArrayList){
+                checkIn = checkIn & rectangle.checkIn(point);
+            }
+        }
+        return checkIn;
     }
 }

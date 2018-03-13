@@ -47,6 +47,7 @@ public class PosSpacialSearchWs {
     private double radius;
     private Point externalLeftTop, externalRightBottom;
     private String hdfsIP = "68.28.8.91";
+    private boolean shapeCheckIn = true;
 
     public String service(String permissionsParams, String businessParams) {
         DataSchema schema = getDataSchema();
@@ -78,7 +79,7 @@ public class PosSpacialSearchWs {
 
             JSONArray jzlxArray = jsonObject.getJSONArray("jzlx");
             int jzlx[] = new int[jzlxArray.size()]; // 车辆类型
-            JSONArray workstateArray = jsonObject.getJSONArray("jzlx");
+            JSONArray workstateArray = jsonObject.getJSONArray("workstate");
             int workstate[] = new int[workstateArray.size()]; // 工作状态
             for(int i = 0; i < jzlxArray.size(); i++){
                 jzlx[i] = (int)jzlxArray.get(i);
@@ -135,98 +136,128 @@ public class PosSpacialSearchWs {
             DataTupleEquivalentPredicateHint predicateHint = null;
 
 //             shape subquery
-//            JSONObject subJSONObject = jsonObject.getJSONObject("subquery");
+            JSONObject subJSONObject = jsonObject.getJSONObject("subquery");
+            ArrayList<Circle> circleArrayList = new ArrayList<>();
+            ArrayList<Rectangle> rectangleArrayList = new ArrayList<>();
+            ArrayList<Predicate> predicateArrayList = new ArrayList<>();
+            do{
+                type = jsonObject.getString("type");
+                switch (type) {
+                    case "rectangle" : {
+                        p = Pattern.compile("^\\-?[0-9]+\\.?[0-9]*+\\,\\-?[0-9]+\\.?[0-9]*");
+                        String rectLeftTop = jsonObject.get("leftTop").toString();
+                        boolean b1 = p.matcher(rectLeftTop).matches();
+                        String rectRightBottom = jsonObject.get("rightBottom").toString();
+                        boolean b2 = p.matcher(rectRightBottom).matches();
+                        if (!b1 || !b2) {
+                            flag = false;
+                            break;
+                        }
+                        Rectangle rectangle;
+                        if (jzlx[0] != 0 || workstate[0] != 0) { // Query conditions
+                            rectangle = initSpecialRectangel(rectLeftTop, rectRightBottom, jzlx, workstate);
+                        }else {
+                            rectangle = initRectangel(rectLeftTop, rectRightBottom);
+                        }
 
-// test
-            switch (type) {
-                case "rectangle" : {
-                    p = Pattern.compile("^\\-?[0-9]+\\.?[0-9]*+\\,\\-?[0-9]+\\.?[0-9]*");
-                    String rectLeftTop = jsonObject.get("leftTop").toString();
-                    boolean b1 = p.matcher(rectLeftTop).matches();
-                    String rectRightBottom = jsonObject.get("rightBottom").toString();
-                    boolean b2 = p.matcher(rectRightBottom).matches();
-                    if (!b1 || !b2) {
-                        flag = false;
+                        rectangleArrayList.add(rectangle);// add to rectangle array list
+    //                    System.out.println(rectangle.getJzlx());
+                        externalLeftTop = new Point(rectangle.getExternalRectangle().getLeftTopX(), rectangle.getExternalRectangle().getLeftTopY());
+                        externalRightBottom = new Point(rectangle.getExternalRectangle().getRightBottomX(), rectangle.getExternalRectangle().getRightBottomY());
+
+                        if (externalLeftTop.x > externalRightBottom.x || externalLeftTop.y < externalRightBottom.y) {
+                            JSONObject queryResponse = new JSONObject();
+                            queryResponse.put("success", false);
+//                            queryResponse.put("result", null);
+                            queryResponse.put("errorCode", 1002);
+                            queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
+                            System.out.println(queryResponse);
+                            return queryResponse.toString();
+                        }
+//                        if (jzlx[0] != 0 || workstate[0] != 0) {
+//                            predicate = t -> ShapeSubQuery(rectangle.specialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t), (Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t))));
+//                        }else {
+//                            predicate = t -> ShapeSubQuery(rectangle.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t))));
+//                        }
+//                        predicateArrayList.add(predicate);// add to predicate array list
                         break;
                     }
-                    Rectangle rectangle;
-                    if (jzlx[0] != 0 || workstate[0] != 0) { // Query conditions
-                        rectangle = initSpecialRectangel(rectLeftTop, rectRightBottom, jzlx, workstate);
-                    }else {
-                        rectangle = initRectangel(rectLeftTop, rectRightBottom);
-                    }
-//                    System.out.println(rectangle.getJzlx());
-                    externalLeftTop = new Point(rectangle.getExternalRectangle().getLeftTopX(), rectangle.getExternalRectangle().getLeftTopY());
-                    externalRightBottom = new Point(rectangle.getExternalRectangle().getRightBottomX(), rectangle.getExternalRectangle().getRightBottomY());
-
-                    if (externalLeftTop.x > externalRightBottom.x || externalLeftTop.y < externalRightBottom.y) {
-                        JSONObject queryResponse = new JSONObject();
-                        queryResponse.put("success", false);
-                        queryResponse.put("result", null);
-                        queryResponse.put("errorCode", 1002);
-                        queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
-                        System.out.println(queryResponse);
-                        return queryResponse.toString();
-                    }
-                    if (jzlx[0] != 0 || workstate[0] != 0) {
-                        predicate = t -> rectangle.specialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t), (Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
-                    }else {
-                        predicate = t -> rectangle.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)));
-                    }
-                    break;
-                }
-                case "polygon" : {
-                    JSONArray geoArray = null;
-                    if (jsonObject.getJSONArray("geoStr") != null) {
-                        geoArray = jsonObject.getJSONArray("geoStr");
-                    }else {
-                        flag = false;
+                    case "polygon" : {
+                        JSONArray geoArray = null;
+                        if (jsonObject.getJSONArray("geoStr") != null) {
+                            geoArray = jsonObject.getJSONArray("geoStr");
+                        }else {
+                            flag = false;
+                            break;
+                        }
+                        Polygon polygon = initPolygon(geoArray);
+                        externalLeftTop = new Point(polygon.getExternalRectangle().getLeftTopX(), polygon.getExternalRectangle().getLeftTopY());
+                        externalRightBottom = new Point(polygon.getExternalRectangle().getRightBottomX(), polygon.getExternalRectangle().getRightBottomY());
+                        localPredicate = t -> polygon.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)));
                         break;
                     }
-                    Polygon polygon = initPolygon(geoArray);
-                    externalLeftTop = new Point(polygon.getExternalRectangle().getLeftTopX(), polygon.getExternalRectangle().getLeftTopY());
-                    externalRightBottom = new Point(polygon.getExternalRectangle().getRightBottomX(), polygon.getExternalRectangle().getRightBottomY());
-                    localPredicate = t -> polygon.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)));
-                    break;
-                }
-                case "circle" : {
-                    p = Pattern.compile("^\\-?[0-9]+\\.?[0-9]*");
-                    String longitude = jsonObject.get("longitude").toString();
-                    boolean b1 = p.matcher(longitude).matches();
-                    String latitude = jsonObject.get("latitude").toString();
-                    boolean b2 = p.matcher(latitude).matches();
-                    String circleradius = jsonObject.get("radius").toString();
-                    boolean b3 = p.matcher(circleradius).matches();
-                    if (!b1 || !b2 || !b3) {
-                        flag = false;
+                    case "circle" : {
+                        p = Pattern.compile("^\\-?[0-9]+\\.?[0-9]*");
+                        String longitude = jsonObject.get("longitude").toString();
+                        boolean b1 = p.matcher(longitude).matches();
+                        String latitude = jsonObject.get("latitude").toString();
+                        boolean b2 = p.matcher(latitude).matches();
+                        String circleradius = jsonObject.get("radius").toString();
+                        boolean b3 = p.matcher(circleradius).matches();
+                        if (!b1 || !b2 || !b3) {
+                            flag = false;
+                            break;
+                        }
+                        double circleRadius = Double.parseDouble(circleradius);
+                        if (groupId.equals("hour") || groupId.equals("min")) {
+                            circleRadius += 10;
+                        }
+                        Circle circle;
+                        if (jzlx[0] != 0 || workstate[0] != 0) {
+                            System.out.println("Query with workstate or jzlx");
+                            circle = initSpecialCircle(longitude, latitude, circleRadius, jzlx, workstate);
+                        }else {
+                            circle = initCircle(longitude, latitude, circleRadius);
+                            System.out.println("No conditions");
+                        }
+
+                        circleArrayList.add(circle);// add to circle array list
+
+                        externalLeftTop = new Point(circle.getExternalRectangle().getLeftTopX(), circle.getExternalRectangle().getLeftTopY());
+                        externalRightBottom = new Point(circle.getExternalRectangle().getRightBottomX(), circle.getExternalRectangle().getRightBottomY());
+
+//                        if (jzlx[0] != 0 || workstate[0] != 0) {
+//                            System.out.println("SpecialCheckIn with workstate or jzlx");
+//                            predicate = t -> (circle.SpecialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t))));
+////                            predicate = t -> circle.SpecialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
+//                        }else {
+//                            predicate = t -> ShapeSubQuery(circle.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t))));
+////                            predicate = t -> circle.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)));
+//                            System.out.println("No SpecialCheckIn");
+//                        }
+//                        predicateArrayList.add(predicate);// add to predicate array list
                         break;
                     }
-                    double circleRadius = Double.parseDouble(circleradius);
-                    if (groupId.equals("hour") || groupId.equals("min")) {
-                        circleRadius += 10;
-                    }
-                    Circle circle;
-                    if (jzlx[0] != 0 || workstate[0] != 0) {
-                        System.out.println("Query with workstate or jzlx");
-                        circle = initSpecialCircle(longitude, latitude, circleRadius, jzlx, workstate);
-                    }else {
-                        circle = initCircle(longitude, latitude, circleRadius);
-                        System.out.println("No conditions");
-                    }
-
-                    externalLeftTop = new Point(circle.getExternalRectangle().getLeftTopX(), circle.getExternalRectangle().getLeftTopY());
-                    externalRightBottom = new Point(circle.getExternalRectangle().getRightBottomX(), circle.getExternalRectangle().getRightBottomY());
-
-                    if (jzlx[0] != 0 || workstate[0] != 0) {
-                        System.out.println("SpecialCheckIn with workstate or jzlx");
-                        predicate = t -> circle.SpecialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
-                    }else {
-                        predicate = t -> circle.checkIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)));
-                        System.out.println("No SpecialCheckIn");
-                    }
-                    break;
+                    default: return null;
                 }
-                default: return null;
+                jsonObject = subJSONObject;
+                subJSONObject = subJSONObject.getJSONObject("subquery");
+            }while(!jsonObject.toString().equals("{}"));
+
+
+            System.out.println(circleArrayList.size() + " " + rectangleArrayList.size());
+            Circle circleTotal = initCircle("1.1","1.1",1.1);
+            circleTotal.setCircleArrayList(circleArrayList);
+            circleTotal.setRectangleArrayList(rectangleArrayList);
+            if (jzlx[0] != 0 || workstate[0] != 0){
+                System.out.println("SpecialCheckIn with workstate or jzlx");
+                predicate = t ->circleTotal.shapeListCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)),true);
+//                predicate = t -> circleTotal.SpecialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
+
+            }else {
+                System.out.println("No SpecialCheckIn");
+                predicate = t ->circleTotal.shapeListCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t)),false);
+//                predicate = t -> circleTotal.SpecialCheckIn(new Point((Double)schema.getValue("longitude", t),(Double)schema.getValue("latitude", t),(Integer) schema.getValue("jzlx", t), (Integer) schema.getValue("workstate", t)));
             }
 
 //            if (id != null) {
@@ -396,6 +427,11 @@ public class PosSpacialSearchWs {
         Point rectRightBottom = new Point(rightBottom_x, rightBottom_y);
         Rectangle rectangle = new Rectangle(rectLeftTop, rectRightBottom, jzlx, workstate);
         return rectangle;
+    }
+
+    boolean ShapeSubQuery(boolean currentShapeCheckIn){
+        shapeCheckIn = shapeCheckIn & currentShapeCheckIn;
+        return shapeCheckIn;
     }
 
     static private DataSchema getDataSchema() {

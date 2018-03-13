@@ -60,6 +60,11 @@ public class Polygon implements Serializable, Shape{
         return new Rectangle(leftTop, rightBottom);
     }
 
+    @Override
+    public boolean shapeListCheckIn(Point point,boolean checkSpecial) {
+        return false;
+    }
+
     /**
      * Builder of the polygon
      *

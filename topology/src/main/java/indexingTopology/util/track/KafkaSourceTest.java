@@ -50,7 +50,7 @@ public class KafkaSourceTest {
 //        FrequencyRestrictor restrictor = new FrequencyRestrictor(1000, 5);
 //        RateTracker rateTracker = new RateTracker(1000, 5);
 
-        int batchSize = 1000;
+        int batchSize = 100;
 //        int batchSize = 2;
 
         Thread emittingThread = null;
@@ -73,8 +73,8 @@ public class KafkaSourceTest {
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date date = formatter.parse(sDateTime); // 把String类型转换为Date类型
                         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-                        if (i < ( batchSize / 5)) {
-//                        if (i < 5) {
+//                        if (i < ( batchSize / 5)) {
+                        if (i < 100) {
                                 Random random = new Random();
                                 int randomValue = random.nextInt(3) + 1;
                                 String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
@@ -82,8 +82,8 @@ public class KafkaSourceTest {
                                         "\"devid\":\"" + getRandomDevid() +
 //                                    "\",\"city\":\"" + getRandomCity() +    // exchange the city value
                                         "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
-                                        "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
-                                        ",\"latitude\":" + getRandomCarLocation(carLocationList.get(randomValue),5)+ "," +
+                                        "\",\"longitude\":" + getRandomLongitude() +
+                                        ",\"latitude\":" + getRandomLatitude()+ "," +
 //                                    "\"altitude\":\"" + getRandomCarLocation(carLocationList.get(randomValue),6) + "\"," +
                                         "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
                                         "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
@@ -162,8 +162,8 @@ public class KafkaSourceTest {
                     //            producer.close();
                     System.out.println("Kafka Producer send msg over,cost time:" + (System.currentTimeMillis() - start) + "ms");
 
-//                    Thread.sleep(3600 * 30 * 1000);
-                    Thread.sleep(1000);
+                    Thread.sleep(3600 * 30 * 1000);
+//                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -273,6 +273,20 @@ public class KafkaSourceTest {
 
     int getRandomDevbtype() {
         int devbtype[] = {11,12,13,14,21,22,23,24,31,32,33,34,4,5,9};
+        Random random = new Random();
+        int num = random.nextInt(15);
+        return devbtype[num];
+    }
+
+    double getRandomLongitude() {
+        double devbtype[] = {6.1,7.2,8.3,1.4,5.1,2.2,2.3,2.4,3.1,3.2,3.3,3.4,4.0,5.0,9.0};
+        Random random = new Random();
+        int num = random.nextInt(15);
+        return devbtype[num];
+    }
+
+    double getRandomLatitude() {
+        double devbtype[] = {6.1,7.2,8.3,1.4,5.1,2.2,2.3,2.4,3.1,3.2,3.3,3.4,4.0,5.0,9.0};
         Random random = new Random();
         int num = random.nextInt(15);
         return devbtype[num];

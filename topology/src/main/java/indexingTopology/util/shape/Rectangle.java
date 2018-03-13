@@ -1,6 +1,7 @@
 package indexingTopology.util.shape;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Create by zelin on 17-12-5
@@ -76,7 +77,7 @@ public class Rectangle implements Shape, Serializable{
                     break;
                 }
             }
-            if( (b1 && b2) || (b1 & this.workstate[0] == 0) || (this.workstate[0] == 0 & b2)){
+            if( (b1 && b2) || (b1 & (this.workstate[0] == 0)) || ((this.jzlx[0] == 0) & b2)){
                 return true;
             }
             else return false;
@@ -87,6 +88,11 @@ public class Rectangle implements Shape, Serializable{
     @Override
     public Rectangle getExternalRectangle() {
         return this;
+    }
+
+    @Override
+    public boolean shapeListCheckIn(Point point,boolean checkSpecial) {
+        return false;
     }
 
 }

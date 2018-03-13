@@ -4,6 +4,7 @@ import cn.binarywang.tools.generator.ChineseNameGenerator;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import sun.plugin.javascript.JSObject;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -97,7 +98,11 @@ public class LocationFile {
 //        for(int i = 0;i < nameList.size(); i++){
 //            System.out.println(carPlateList.get(i) + " " + nameList.get(i));
 //        }
-        String jsonStr = "{\"devid\":1,\"city\":[\"11\",\"22\"]}";
+        String jsonStr = "{\"devid\":1,\"city\":[\"11\",\"22\"],\"sub\":[\"de\":\"asd\"]}";
+        String jsonStr2 = "{\"devid\":1,\"city\":[\"11\",\"22\"],\"sub\":()}";
+        jsonStr2 = jsonStr2.replace('(', '{');
+        jsonStr2 = jsonStr2.replace(')', '}');
+        System.out.println(jsonStr2);
         JSONObject jsonObject = JSONObject.parseObject(jsonStr);
 
         System.out.println(jsonObject.containsKey("city"));
@@ -118,5 +123,17 @@ public class LocationFile {
         System.out.println(lineItem.checkConform("4406",1,"123"));
         String cardevid = "123456";
         System.out.println(cardevid.substring(1));
+
+        JSONObject jsonObject1 = jsonObject.getJSONObject("sub");
+        String sub = jsonObject1.get("de").toString();
+        System.out.println(sub);
+        JSONObject jsonObject2 = JSONObject.parseObject(jsonStr2);
+        JSONObject jsonObject3 = jsonObject2.getJSONObject("sub");
+        if(jsonObject3.toString().equals("{}")){
+            System.out.println("It is null");
+        }
+        System.out.println(jsonObject3);
+        boolean a1 = true,a2 = true;
+        System.out.println(a1 & a2);
     }
 }
