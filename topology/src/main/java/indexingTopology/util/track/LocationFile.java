@@ -2,14 +2,12 @@ package indexingTopology.util.track;
 
 import cn.binarywang.tools.generator.ChineseNameGenerator;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import sun.plugin.javascript.JSObject;
+import indexingTopology.common.data.DataTuple;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -98,17 +96,17 @@ public class LocationFile {
 //        for(int i = 0;i < nameList.size(); i++){
 //            System.out.println(carPlateList.get(i) + " " + nameList.get(i));
 //        }
-        String jsonStr = "{\"devid\":1,\"city\":[\"11\",\"22\"],\"sub\":[\"de\":\"asd\"]}";
-        String jsonStr2 = "{\"devid\":1,\"city\":[\"11\",\"22\"],\"sub\":()}";
+        String jsonStr = "{\"devid\":1,\"city\":[\"11\",\"22\"],\"sub\":[\"de\",\"asd\"]}";
+        String jsonStr2 = "{\"devid\":1,\"city\":[\"11\",\"22\"],\"sub\":{\"de\":\"asd\"}}";
         jsonStr2 = jsonStr2.replace('(', '{');
         jsonStr2 = jsonStr2.replace(')', '}');
         System.out.println(jsonStr2);
-        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+        JSONObject jsonObject = JSONObject.parseObject(jsonStr2);
 
         System.out.println(jsonObject.containsKey("city"));
-        LineItem user = JSON.parseObject(jsonStr,LineItem.class);
-        String city[] = user.getCity();
-        System.out.println(city[1]);
+//        LineItem user = JSON.parseObject(jsonStr,LineItem.class);
+//        String city[] = user.getCity();
+//        System.out.println(city[1]);
         JSON.parse(jsonStr);
 //        JSONArray items = JSONArray.
         System.out.println(jsonObject);
@@ -129,11 +127,15 @@ public class LocationFile {
         System.out.println(sub);
         JSONObject jsonObject2 = JSONObject.parseObject(jsonStr2);
         JSONObject jsonObject3 = jsonObject2.getJSONObject("sub");
-        if(jsonObject3.toString().equals("{}")){
+        if(jsonObject3 == null){
             System.out.println("It is null");
         }
         System.out.println(jsonObject3);
         boolean a1 = true,a2 = true;
         System.out.println(a1 & a2);
+        List<DataTuple> tmpTuples = new ArrayList<>();
+        if(tmpTuples == null){
+            System.out.println("tuples is null");
+        }
     }
 }

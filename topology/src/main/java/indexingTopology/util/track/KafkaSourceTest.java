@@ -74,7 +74,7 @@ public class KafkaSourceTest {
                         Date date = formatter.parse(sDateTime); // 把String类型转换为Date类型
                         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
 //                        if (i < ( batchSize / 5)) {
-                        if (i < 100) {
+                        if (i <= 100) {
                                 Random random = new Random();
                                 int randomValue = random.nextInt(3) + 1;
                                 String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
@@ -83,7 +83,7 @@ public class KafkaSourceTest {
 //                                    "\",\"city\":\"" + getRandomCity() +    // exchange the city value
                                         "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
                                         "\",\"longitude\":" + getRandomLongitude() +
-                                        ",\"latitude\":" + getRandomLatitude()+ "," +
+                                        ",\"latitude\":" + getRandomLatitude2()+ "," +
 //                                    "\"altitude\":\"" + getRandomCarLocation(carLocationList.get(randomValue),6) + "\"," +
                                         "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
                                         "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
@@ -162,7 +162,7 @@ public class KafkaSourceTest {
                     //            producer.close();
                     System.out.println("Kafka Producer send msg over,cost time:" + (System.currentTimeMillis() - start) + "ms");
 
-                    Thread.sleep(3600 * 30 * 1000);
+                    Thread.sleep(3600 * 1000);
 //                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -286,7 +286,14 @@ public class KafkaSourceTest {
     }
 
     double getRandomLatitude() {
-        double devbtype[] = {6.1,7.2,8.3,1.4,5.1,2.2,2.3,2.4,3.1,3.2,3.3,3.4,4.0,5.0,9.0};
+        double devbtype[] = {6.1,7.2,8.3,1.4,5.1,5.2,2.3,2.4,3.1,3.2,5.3,3.4,4.0,5.0,9.0};
+        Random random = new Random();
+        int num = random.nextInt(15);
+        return devbtype[num];
+    }
+
+    double getRandomLatitude2() {
+        double devbtype[] = {5.1,5.2,5.3,5.4,5.5,5.1,5.2,5.3,5.4,5.5,5.7,5.1,5.2,5.3,5.4};
         Random random = new Random();
         int num = random.nextInt(15);
         return devbtype[num];

@@ -34,6 +34,8 @@ public class DataTuple extends ArrayList<Object> implements Serializable {
         if (tuple.size() != this.size())
             return false;
         for (int i = 0; i < this.size(); i++) {
+            if(this.get(i) == null && tuple.get(i) == null)
+                continue;
             if (!this.get(i).equals(tuple.get(i)))
                 return false;
         }
