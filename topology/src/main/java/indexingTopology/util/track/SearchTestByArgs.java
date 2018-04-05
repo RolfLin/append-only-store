@@ -2,12 +2,10 @@ package indexingTopology.util.track;
 
 import indexingTopology.util.shape.Point;
 import indexingTopology.util.shape.Rectangle;
-import org.eclipse.jdt.internal.core.SourceType;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import javax.xml.bind.SchemaOutputResolver;
 import java.util.Random;
 
 /**
@@ -48,13 +46,13 @@ public class SearchTestByArgs {
     private String Row = "10";
 
     @Option(name = "--city", aliases = {"-c"}, usage = "row of page search")
-    private String City = "4401";
+    private String City = "4406";
 
     @Option(name = "--devbtype", aliases = {"-devb"}, usage = "row of page search")
-    private String Devbtype = "10";
+    private String Devbtype = "11";
 
     @Option(name = "--devid", aliases = {"-devid"}, usage = "row of page search")
-    private String Devid = "0x0101";
+    private String Devid = "3846";
 
     @Option(name = "--percent", aliases = {"-p"}, usage = "percentage of the shape search")
     private String Percent = "-1";
@@ -119,24 +117,34 @@ public class SearchTestByArgs {
             TrackSearchWs trackSearchWs = new TrackSearchWs();
             String queryResult = trackSearchWs.services(null, businessParams);
             long end = System.currentTimeMillis();
+//            System.out.println(queryResult);
             long useTime = end - start;
 //            System.out.println(queryResult);
-            System.out.println("Response time: " + useTime + "ms");
+            System.out.println("Response time: " + useTime + "ms\n");
         }
     }
 
     void TrackPagedSearchTest() {
         long startTime = System.currentTimeMillis() - TimeRange;
         long endTime = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         String businessParamsPaged = "{\"city\":\"" + City + "\",\"devbtype\":" + Devbtype + ",\"devid\":\"" + Devid + "\",\"startTime\":"
                 + startTime + ",\"endTime\":" + endTime + ",\"page\":" + Page + ",\"rows\":" + Row + "}";
         TrackPagedSearchWs trackPagedSearchWs = new TrackPagedSearchWs();
         String queryResultPaged = trackPagedSearchWs.services(null, businessParamsPaged);
+        long end = System.currentTimeMillis();
+//        System.out.println(queryResultPaged);
+        long useTime = end - start;
+        System.out.println("Response time: " + useTime + "ms\n");
     }
 
     void PosNonSpacialSearchTest() {
+        long start = System.currentTimeMillis();
         PosNonSpacialSearchWs posNonSpacialSearchWs = new PosNonSpacialSearchWs();
         String result = posNonSpacialSearchWs.services(null, null);
+        long end = System.currentTimeMillis();
+        long useTime = end - start;
+        System.out.println("Response time: " + useTime + "ms\n");
     }
 
     void PosSpacialSearchTest() {
@@ -155,18 +163,25 @@ public class SearchTestByArgs {
                     double percentage = Double.parseDouble(Percent);
                     if (percentage >= 0 && percentage < 1) {
                         rectangle = zoomInRectangle(percentage);
+                        LeftTop = rectangle.getLeftTopX() + "," + rectangle.getLeftTopY();
+                        RightBottom = rectangle.getRightBottomX() + "," + rectangle.getRightBottomY();
                     }
-                    LeftTop = rectangle.getLeftTopX() + "," + rectangle.getLeftTopY();
-                    RightBottom = rectangle.getRightBottomX() + "," + rectangle.getRightBottomY();
+                    else{
+                         leftTop_x = Double.parseDouble(LeftTop.split(",")[0]) - 1;
+                         leftTop_y = Double.parseDouble(LeftTop.split(",")[1]) + 1;
+                         rightBottom_x = Double.parseDouble(RightBottom.split(",")[0]) + 1;
+                         rightBottom_y = Double.parseDouble(RightBottom.split(",")[1]) - 1;
+                    }
                     String searchRectangle = "{\"type\":\"rectangle\",\"leftTop\":\"" + LeftTop + "\",\"rightBottom\":\"" + RightBottom
                             + "\",\"geoStr\":null,\"longitude\":null,\"latitude\":null,\"radius\":null,\"startTime\":" + startTime +
                             ",\"endTime\":" + endTime + "}";
                     long start = System.currentTimeMillis();
                     System.out.println(String.format("%f-%f, %f-%f", leftTop_x, rightBottom_x, leftTop_y, rightBottom_y));
-                    posSpacialSearchWs.service(null, searchRectangle, startTime, endTime, id);
+                    result = posSpacialSearchWs.service(null, searchRectangle, startTime, endTime, id);
                     long end = System.currentTimeMillis();
+//                    System.out.println(result);
                     long useTime = end - start;
-                    System.out.println("Response time: " + useTime + "ms");
+                    System.out.println("Response time: " + useTime + "ms\n");
                 }
             }break;
             case "circle": {
@@ -191,7 +206,8 @@ public class SearchTestByArgs {
                     posSpacialSearchWs.service(null, searchCircle, startTime, endTime, id);
                     long end = System.currentTimeMillis();
                     long useTime = end - start;
-                    System.out.println("Response time: " + useTime + "ms");
+//                    System.out.println(result);
+                    System.out.println("Response time: " + useTime + "ms\n");
                 }
             }break;
             case "polygon": {
@@ -210,10 +226,10 @@ public class SearchTestByArgs {
                         "r\":" + geostr + ",\"lon\":null,\"lat\":null,\"radius\":null,\"startTime\":" + startTime +
                         ",\"endTime\":" + endTime + "}";
                 result = posSpacialSearchWs.service(null, searchPolygon, startTime, endTime, id);
-                System.out.println(result);
+//                System.out.println(result);
                 long end = System.currentTimeMillis();
                 long useTime = end - start;
-                System.out.println("Response time: " + useTime + "ms");
+                System.out.println("Response time: " + useTime + "ms\n");
             }break;
             default: System.out.println("Invalid command!");
         }

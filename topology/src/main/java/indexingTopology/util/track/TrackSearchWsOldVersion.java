@@ -13,25 +13,49 @@ import indexingTopology.common.logics.DataTuplePredicate;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by billlin on 2017/12/15
  */
-public class TrackPagedSearchWs implements Serializable{
-    private String city;
+public class TrackSearchWsOldVersion implements Serializable{
+
     private int devbtype;
+    private String devstype;
     private String devid;
+    private String city;
+    private double longitude;
+    private double latidute;
+    private double altitude;
+    private double speed;
+    private double direction;
+    private long locationtime;
+    private int workstate;
+    private String clzl;
+    private String hphm;
+    private int jzlx;
+    private String jybh;
+    private String jymc;
+    private String lxdh;
+    private String ssdwdm;
+    private String ssdwmc;
+    private String teamno;
+    private String dth;
+    private String reserve1;
+    private String reserve2;
+    private String reserve3;
+
     private long startTime;
     private long endTime;
-    private int page;
-    private int rows;
     private String errorCode;
     private String errorMsg;
     private String hdfsIP = "68.28.8.91";
     private String QueryServerIp = "localhost";
 
-    public TrackPagedSearchWs(){
+    public TrackSearchWsOldVersion(){
 
 //        this.city = (String)businessParams.get("city");
 //        this.devbtype = (int)businessParams.get("devbtype");
@@ -46,38 +70,33 @@ public class TrackPagedSearchWs implements Serializable{
             JSONObject jsonObject = JSONObject.parseObject(businessParams);
             try{
                 getQueryJson(jsonObject); // query failed,json format is error
-            }
-            catch (JSONException e){
+            }catch (JSONException e){
                 queryResponse.put("result", null);
                 queryResponse.put("errorCode", "1002");
                 queryResponse.put("errorMsg", "参数值无效或者缺失必填参数");
                 String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
                 return result;
-            }
-            catch (NullPointerException e){
+            }catch (NullPointerException e){
                 queryResponse.put("result", null);
                 queryResponse.put("errorCode", "1002");
                 queryResponse.put("errorMsg", "参数值无效或者缺失必填参数");
                 String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
                 return result;
-            }
-            catch (IllegalArgumentException e){
+            }catch (IllegalArgumentException e){
                 queryResponse.put("result", null);
-                queryResponse.put("errorCode", "1");
+                queryResponse.put("errorCode", "1002");
                 queryResponse.put("errorMsg", "参数值无效或者缺失必填参数");
                 String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
                 return result;
             }
         }catch (JSONException e){// query failed, json value invalid
             errorCode = "1001";
-//            errorMsg = Error(errorCode);
             queryResponse.put("result", null);
             queryResponse.put("errorCode", errorCode);
             queryResponse.put("errorMsg", "参数解析失败，参数格式存在问题");
             String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
             return result;
         }
-
         // query success
         GeoTemporalQueryClient queryClient = new GeoTemporalQueryClient(QueryServerIp, 10001);
         try {
@@ -97,36 +116,18 @@ public class TrackPagedSearchWs implements Serializable{
             System.out.println("datatuples : " + response.dataTuples.size());
             List<DataTuple> tuples = response.getTuples();
 
-            int totalPage = tuples.size()/rows;
-
             queryResponse.put("success", true);
             JSONArray queryResult = new JSONArray();
-            if(tuples.size() > 0 && tuples.size() > rows * (page - 1)){
-                for (int i = rows * (page - 1); i < rows * page; i++) {
-                    if(i >= tuples.size()){
-                        break;
-                    }
-                    JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuples.get(i));
-                    queryResult.add(jsonFromTuple);
-                    System.out.println(jsonFromTuple);
-                }
+            for (int i = 0; i < tuples.size(); i++) {
+                JSONObject jsonFromTuple = schema.getJsonFromDataTupleWithoutZcode(tuples.get(i));
+                queryResult.add(jsonFromTuple);
+                System.out.println(jsonFromTuple);
             }
-            JSONObject result = new JSONObject();
-            result.put("total", tuples.size());
-            result.put("page",page);
-            result.put("sortName",null);
-            result.put("sortOrder",null);
-            result.put("city",city);
-            result.put("devbtype",devbtype);
-            result.put("devid",devid);
-            result.put("startTime",startTime);
-            result.put("endTime",endTime);
-            result.put("startRowKey",null);
-            result.put("stopRowKey",null);
-            result.put("rows",queryResult);
-            queryResponse.put("result", result);
+            queryResponse.put("result", queryResult);
             queryResponse.put("errorCode", null);
             queryResponse.put("errorMsg", null);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -141,19 +142,15 @@ public class TrackPagedSearchWs implements Serializable{
         return result;
     }
 
-    public boolean getQueryJson(JSONObject businessParams) throws JSONException, NullPointerException{
-//        try {
-            this.city = (String)businessParams.get("city");
-            this.devbtype = (int)businessParams.get("devbtype");
-            this.devid = (String)businessParams.get("devid");
-            this.startTime = (long)businessParams.get("startTime");
-            this.endTime = (long)businessParams.get("endTime");
-            this.page = (int)businessParams.get("page");
-            this.rows = (int)businessParams.get("rows");
-            if(city == null || devid == null || businessParams.size() > 7){
-                throw new IllegalArgumentException();
-            }
-        return true;
+    public void getQueryJson(JSONObject businessParams) throws JSONException, NullPointerException{
+        this.devbtype = (int)businessParams.get("devbtype");
+        this.devid = (String)businessParams.get("devid");
+        this.city = (String)businessParams.get("city");
+        this.startTime = (long)businessParams.get("startTime");
+        this.endTime = (long)businessParams.get("endTime");
+        if(city == null ||  devid == null){
+            throw new IllegalArgumentException("Missing required parameters");
+        }
     }
 
 //    public boolean CheckEqual(String city, int devbtype, String devid) {
@@ -212,9 +209,6 @@ public class TrackPagedSearchWs implements Serializable{
         return schema;
     }
 
-
-
-
 //    static private DataSchema getDataSchema() {
 //        DataSchema schema = new DataSchema();
 //        schema.addDoubleField("lon");
@@ -224,7 +218,6 @@ public class TrackPagedSearchWs implements Serializable{
 ////        schema.addVarcharField("id", 64);
 //        schema.addVarcharField("city",64);
 //        schema.addLongField("locationtime");
-//        schema.setTemporalField("locationtime");
 ////        schema.addLongField("timestamp");
 //        schema.addIntField("zcode");
 //        schema.setPrimaryIndexField("zcode");

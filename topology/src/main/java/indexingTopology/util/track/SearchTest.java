@@ -11,18 +11,18 @@ public class SearchTest {
         Scanner scanner =new Scanner(System.in);
         while (scanner.hasNext()){
             String  querySelect = scanner.next();
-            long startTime = System.currentTimeMillis() - 30 * 1000;
+            long startTime = System.currentTimeMillis() - 1000 * 3600 * 2;
             long endTime = System.currentTimeMillis();
             switch (querySelect){
                 case "1" : {
-                    String businessParams = "{\"city\":\"4403\",\"devbtype\":1,\"devid\":\"75736331\",\"startTime\":" + startTime + ",\"endTime\":" + endTime + "}";
+                    String businessParams = "{\"city\":\"4406\",\"devbtype\":11,\"devid\":\"3846\",\"startTime\":" + startTime + ",\"endTime\":" + endTime + "}";
                     TrackSearchWs trackSearchWs = new TrackSearchWs();
                     String queryResult = trackSearchWs.services(permissionParams, businessParams);
                     System.out.println(queryResult);
                     break;
                 }
                 case "2" : {
-                    String businessParamsPaged = "{\"city\":\"4403\",\"devbtype\":1,\"devid\":\"75736331\",\"startTime\":" + startTime + ",\"endTime\":" + endTime + ",\"page\":1,\"rows\":10}";
+                    String businessParamsPaged = "{\"city\":\"4406\",\"devbtype\":11,\"devid\":\"3846\",,\"startTime\":" + startTime + ",\"endTime\":" + endTime + ",\"page\":2,\"rows\":10}";
                     TrackPagedSearchWs trackPagedSearchWs = new TrackPagedSearchWs();
                     String queryResultPaged = trackPagedSearchWs.services(permissionParams, businessParamsPaged);
                     System.out.println(queryResultPaged);

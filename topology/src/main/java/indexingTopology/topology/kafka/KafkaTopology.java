@@ -43,12 +43,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.SocketTimeoutException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import waterwheel.scheduler.FFDStrategyByCPU;
 
 /**
  * Created by billlin on 2017/11/25
@@ -95,12 +96,26 @@ public class KafkaTopology {
 //    private int NumberOfQueries = Integer.MAX_VALUE;
     private int NumberOfQueries = 20;
 
+    /**
+     * shape configuration
+     */
+    @Option(name = "--min-longitude", aliases = {"-minlon"}, usage = "min longitude")
+    private double x1 = 111.012928;
+
+    @Option(name = "--max-longitude", aliases = {"-maxlon"}, usage = "max longitude")
+    private double x2 = 115.023983;
+
+    @Option(name = "--min-latitude", aliases = {"-minla"}, usage = "min latitude")
+    private double y1 = 21.292677;
+
+    @Option(name = "--max-latitude", aliases = {"-maxla"}, usage = "max latitude")
+    private double y2 = 25.614865;
 
 
-    static final double x1 = 111.012928;
-    static final double x2 = 115.023983;
-    static final double y1 = 21.292677;
-    static final double y2 = 25.614865;
+//    static final double x1 = 111.012928;
+//    static final double x2 = 115.023983;
+//    static final double y1 = 21.292677;
+//    static final double y2 = 25.614865;
     static final int partitions = 128;
     int totalNumber = 0;
     AvailableSocketPool socketPool = new AvailableSocketPool();

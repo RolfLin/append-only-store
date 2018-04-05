@@ -50,7 +50,7 @@ public class PosNonSpacialSearchWs {
             e.printStackTrace();
         }
         long timeMillis = System.currentTimeMillis();
-        long timeMillis2 = System.currentTimeMillis() - 600 * 1000;
+        long timeMillis2 = System.currentTimeMillis() - 120 * 1000;
         GeoTemporalQueryRequest queryRequest = new GeoTemporalQueryRequest<>(Double.MIN_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MAX_VALUE,
                 timeMillis2,
                 timeMillis, null, null,null, null, null);
@@ -81,9 +81,10 @@ public class PosNonSpacialSearchWs {
         try {
             QueryResponse response = queryClient.query(queryRequest);
             List<DataTuple> tuples = response.getTuples();
+            System.out.println("Amount : " + tuples.size());
             for (DataTuple tuple : tuples) {
                 queryResult.add(schema.getJsonFromDataTupleWithoutZcode(tuple));
-                System.out.println(schema.getJsonFromDataTupleWithoutZcode(tuple));
+//                System.out.println(schema.getJsonFromDataTupleWithoutZcode(tuple));
             }
 //            queryResponse.put("success", false);
 //            queryResponse.put("result", null);

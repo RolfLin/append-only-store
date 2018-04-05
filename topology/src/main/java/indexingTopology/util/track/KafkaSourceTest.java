@@ -8,6 +8,9 @@ import indexingTopology.util.taxi.Car;
 import indexingTopology.util.taxi.TrajectoryGenerator;
 import indexingTopology.util.taxi.TrajectoryMovingGenerator;
 import org.apache.storm.metric.internal.RateTracker;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +22,13 @@ import java.util.regex.Pattern;
  * Created by billlin on 2017/12/30
  */
 public class KafkaSourceTest {
+
+    @Option(name = "--ingest-rate-limit", aliases = {"-r"}, usage = "max ingestion rate")
+    private int MaxIngestRate = 1000;
+
+    @Option(name = "--ingest-server-ip", usage = "the ingest server ip")
+    private String IngestServerIp = "localhost";
+
     static final double x1 = 111.012928;
     static final double x2 = 115.023983;
     static final double y1 = 21.292677;
@@ -33,10 +43,10 @@ public class KafkaSourceTest {
         Matcher m = p.matcher("[\"10.21.25.203:9092\",\"10.21.25.204:9092\",\"10.21.25.205:9092\"]");
         String currentKafkahost = m.replaceAll("").trim();
 //        IngestionKafkaBatchMode kafkaBatchMode = new IngestionKafkaBatchMode("10.21.25.203:9092,10.21.25.203:9092,10.21.25.203:9092", "gpis");
-        IngestionKafkaBatchMode kafkaBatchMode = new IngestionKafkaBatchMode("192.168.0.150:9092", "gpis");
+        IngestionKafkaBatchMode kafkaBatchMode = new IngestionKafkaBatchMode(IngestServerIp + ":9092", "gpis");
         kafkaBatchMode.ingestProducer();
-        int batchSize = 10000;
-        FrequencyRestrictor restrictor = new FrequencyRestrictor(10000000, 5);
+        int batchSize = 100;
+        FrequencyRestrictor restrictor = new FrequencyRestrictor(MaxIngestRate, 2);
         RateTracker rateTracker = new RateTracker(1000, 5);
         Thread emittingThread = null;
         emittingThread = new Thread(() -> {
@@ -116,6 +126,15 @@ public class KafkaSourceTest {
 
     public static void main(String[] args) {
         KafkaSourceTest kafkaSourceTest = new KafkaSourceTest();
+        CmdLineParser parser = new CmdLineParser(kafkaSourceTest);
+
+        try {
+            parser.parseArgument(args);
+        } catch (CmdLineException e) {
+            e.printStackTrace();
+            parser.printUsage(System.out);
+        }
+
         kafkaSourceTest.sourceProducer();
     }
 }

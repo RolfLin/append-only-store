@@ -48,9 +48,9 @@ public class PosSpacialSearchWs {
             boolean flag = true;
     //        System.out.println(geoArray.toString());
             DataTuplePredicate predicate = null, localPredicate = null, finalPredicate = null;
-            Aggregator<Integer> aggregator = new Aggregator<>(schema, null, new AggregateField(new Count(), "*")
-                    );
-            outputSchema = aggregator.getOutputDataSchema();
+//            Aggregator<Integer> aggregator = new Aggregator<>(schema, null, new AggregateField(new Count(), "*")
+//                    );
+//            outputSchema = aggregator.getOutputDataSchema();
             DataTupleEquivalentPredicateHint predicateHint = null;
 
             switch (type) {
@@ -145,14 +145,15 @@ public class PosSpacialSearchWs {
 
                 GeoTemporalQueryRequest queryRequest = new GeoTemporalQueryRequest<>(xLow, xHigh, yLow, yHigh,
                         startTime,
-                        endTime, finalPredicate, null,aggregator, null, predicateHint);
+                        endTime, finalPredicate, null,null, null, predicateHint);
                 System.out.println("xLow:" + xLow + " " + xHigh + " " +yLow + " " + yHigh);
                 System.out.println("start: " + startTime + " end: " + endTime);
                 try {
                     QueryResponse response = queryClient.query(queryRequest);
-                    System.out.println(response.toString());
+//                    System.out.println(response.toString());
                     List<DataTuple> tuples = response.getTuples();
-                    System.out.println(tuples.size());
+//                    System.out.println(tuples.size());
+                    System.out.println("Amount : " + tuples.size());
                     queryResult = new JSONArray();
                     for (DataTuple tuple : tuples){
                         JSONObject jsonFromTuple = outputSchema.getJsonFromDataTupleWithoutZcode(tuple);

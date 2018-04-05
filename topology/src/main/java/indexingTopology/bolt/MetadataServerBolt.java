@@ -619,7 +619,7 @@ public class MetadataServerBolt<Key extends Number> extends BaseRichBolt {
                     // HDFS
                     try {
                         HdfsFileSystemHandler fileSystemHandler = new HdfsFileSystemHandler("", config);
-                        fileSystemHandler.openFile(config.dataChunkDir,"");
+//                        fileSystemHandler.openFile(config.dataChunkDir,"");
                         try {
                             searchHDFSOldData(fileSystemHandler, config.dataChunkDir, removeHours, false);
                         } catch (InterruptedException e1) {
