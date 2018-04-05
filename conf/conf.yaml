@@ -7,7 +7,7 @@
 # the path where the metadata will be stored
  metadata.local.storage.path: "metadata"
 # default file system for storage: hdfs/local.
- storage.file.system: "local"
+ storage.file.system: "hdfs"
 
 # default time to remove old data
  remove.interval.hours: 6
