@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class KafkaSourceTest {
 
     @Option(name = "--ingest-rate-limit", aliases = {"-r"}, usage = "max ingestion rate")
-    private int MaxIngestRate = 1000;
+    private int MaxIngestRate = 10;
 
     @Option(name = "--ingest-server-ip", usage = "the ingest server ip")
     private String IngestServerIp = "localhost";
@@ -68,13 +68,17 @@ public class KafkaSourceTest {
                         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
 //                            System.out.println(devbtype);
 //                            String Msg = "{\"lon\":"+ car.x + ",\"lat\":" + car.y + ",\"devbtype\":"+ devbtype +",\"devid\":\"asd\",\"city\":\"4401\",\"locationtime\":" + System.currentTimeMillis() +  "}";
-//                        if (i  < batchSize/2) {
-////                        if(i < 0){
+                        if (i  < 1) {
+                            String Msg = "{\"devbtype\":" + 31 + ",\"devstype\":" + 31 + ",\"devid\":\"" + 83696 + "\",\"city\":\"4401\",\"longitude\":" + car.x + ",\"latitude\":" + car.y
+                                    + ",\"altitude\":\"0\"," +
+                                    "\"speed\":\"0\",\"direction\":\"0\",\"locationtime\":\"" + currentTime + "\",\"workstate\":\"1\",\"clzl\":\"\",\"hphm\":\"\",\"jzlx\":\"7\",\"jybh\":\"100011\"," +
+                                    "\"jymc\":\"陈国基陈国基陈国基陈国基陈国基陈国基陈国基陈国基陈国基陈国基\",\"lxdh\":\"13576123212\",\"dth\":\"\",\"reserve1\":\"1\",\"reserve2\":\"\",\"reserve3\":\"\",\"ssdwdm\":\"440100000000\"," +
+                                    "\"ssdwmc\":\"a\",\"teamno\":\"44010001\"}";
 //                            String Msg = jsonTest.CheckJingyiJson(1);
 ////                            String Msg = "{\"asd\":\"\",\"reserve1\":\"1\",\"reserve2\":\"\",\"reserve3\":\"\",\"ssdwdm\":\"440100000000\"," +
 ////                                    "\"ssdwmc\":\"字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数字数\",\"teamno\":\"44010001\",}";
 //                            kafkaBatchMode.send(i, Msg);
-//                        } else {
+                        } else {
                             String Msg = "{\"devbtype\":" + 11 + ",\"devstype\":" + 123 + ",\"devid\":\"" + car.id + "\",\"city\":\"4406\",\"longitude\":" + car.x + ",\"latitude\":" + car.y
                                     + ",\"altitude\":\"0\"," +
                                     "\"speed\":\"0\",\"direction\":\"0\",\"locationtime\":\"" + currentTime + "\",\"workstate\":\"1\",\"clzl\":\"\",\"hphm\":\"\",\"jzlx\":\"7\",\"jybh\":\"100011\"," +
@@ -86,8 +90,9 @@ public class KafkaSourceTest {
 //                                    "\"ssdwmc\":\"广州市\",\"teamno\":\"44010001\"}";
 //                            String   Msg = "{\"devbtype\":" + 10 + ",\"devstype\":\"123\"}";
 //                            System.out.println(currentTime);
+                        System.out.println(Msg);
                             kafkaBatchMode.send(i, Msg);
-//                        }
+                        }
                         //                        this.producer.send(new ProducerRecord<String, String>("consumer",
                         //                                String.valueOf(i), "{\"employees\":[{\"firstName\":\"John\",\"lastName\":\"Doe\"},{\"firstName\":\"Anna\",\"lastName\":\"Smith\"},{\"firstName\":\"Peter\",\"lastName\":\"Jones\"}]}"));
                         //                        String.format("{\"type\":\"test\", \"t\":%d, \"k\":%d}", System.currentTimeMillis(), i)));
@@ -116,6 +121,7 @@ public class KafkaSourceTest {
                 try {
                     Thread.sleep(1000);
                     System.out.println(String.format("%.1f tuples / s.", rateTracker.reportRate()));
+                    System.out.println(System.currentTimeMillis());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     break;

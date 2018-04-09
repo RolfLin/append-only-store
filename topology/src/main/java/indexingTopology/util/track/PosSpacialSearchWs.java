@@ -44,6 +44,8 @@ public class PosSpacialSearchWs {
         try{
             JSONObject jsonObject = JSONObject.parseObject(businessParams);
             String type = jsonObject.getString("type");
+            startTime = jsonObject.getLong("startTime");
+            endTime = jsonObject.getLong("endTime");
             Pattern p = null;
             boolean flag = true;
     //        System.out.println(geoArray.toString());
