@@ -99,7 +99,7 @@ public class KafkaSourceTest {
                                         "\",\"ssdwmc\":\"a\"," +
                                         "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(1),8) + "\"}";
 //                                System.out.println(Msg);
-                                kafkaBatchMode.send(i, Msg);
+//                                kafkaBatchMode.send(i, Msg);
                             } else {
                                 Random random = new Random();
                                 int randomValue = random.nextInt(5000) + 1;
