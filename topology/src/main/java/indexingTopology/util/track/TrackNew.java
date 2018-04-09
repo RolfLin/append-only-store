@@ -76,7 +76,7 @@ public class TrackNew {
             if(type == null || type.equals("line") == false){
                 JSONObject queryResponse = new JSONObject();
                 queryResponse.put("success", false);
-                queryResponse.put("result", null);
+//                queryResponse.put("result", null);
                 queryResponse.put("errorCode", 1003);
                 queryResponse.put("errorMsg", "查询类型不正确");
                 String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
@@ -113,7 +113,7 @@ public class TrackNew {
                     endTime, predicate, null, null, null, null);
             try {
                 QueryResponse response = queryClient.query(queryRequest);
-                System.out.println(response.toString());
+//                System.out.println(response.toString());
                 List<DataTuple> tuples = response.getTuples();
                 queryResult = new JSONArray();
                 for (DataTuple tuple : tuples) {
@@ -136,8 +136,8 @@ public class TrackNew {
             }
             queryResponse.put("success", true);
             queryResponse.put("result", queryResult);
-            queryResponse.put("errorCode", null);
-            queryResponse.put("errorMsg", null);
+//            queryResponse.put("errorCode", null);
+//            queryResponse.put("errorMsg", null);
 //            String result = JSONObject.toJSONString(queryResponse);
             String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
             return result;
@@ -145,7 +145,7 @@ public class TrackNew {
             e.printStackTrace();
             JSONObject queryResponse = new JSONObject();
             queryResponse.put("success", false);
-            queryResponse.put("result", null);
+//            queryResponse.put("result", null);
             queryResponse.put("errorCode", 1002);
             queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
             String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
@@ -155,7 +155,7 @@ public class TrackNew {
             e.printStackTrace();
             JSONObject queryResponse = new JSONObject();
             queryResponse.put("success", false);
-            queryResponse.put("result", null);
+//            queryResponse.put("result", null);
             queryResponse.put("errorCode", 1002);
             queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
             String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);

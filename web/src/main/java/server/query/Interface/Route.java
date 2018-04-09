@@ -1,4 +1,4 @@
-package sentosa.query.Interface;
+package server.query.Interface;
 
 import java.util.ArrayList;
 import java.util.List;

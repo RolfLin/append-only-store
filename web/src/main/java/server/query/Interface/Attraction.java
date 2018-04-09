@@ -1,4 +1,4 @@
-package sentosa.query.Interface;
+package server.query.Interface;
 
 /**
  * Created by robert on 28/12/16.

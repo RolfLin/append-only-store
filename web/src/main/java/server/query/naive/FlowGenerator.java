@@ -1,7 +1,7 @@
-package sentosa.query.naive;
+package server.query.naive;
 
-import sentosa.query.Interface.Attraction;
-import sentosa.query.Interface.Point;
+import server.query.Interface.Attraction;
+import server.query.Interface.Point;
 
 import java.util.*;
 

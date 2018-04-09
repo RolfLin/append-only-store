@@ -1,4 +1,4 @@
-package sentosa.error;
+package server.error;
 
 /**
  * Created by robert on 28/12/16.

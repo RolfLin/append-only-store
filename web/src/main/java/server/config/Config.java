@@ -1,4 +1,4 @@
-package sentosa.config;
+package server.config;
 
 /**
  * Created by robert on 28/12/16.

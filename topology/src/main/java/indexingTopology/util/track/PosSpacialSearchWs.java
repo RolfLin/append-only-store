@@ -137,7 +137,7 @@ public class PosSpacialSearchWs {
                     if (externalLeftTop.x > externalRightBottom.x || externalLeftTop.y < externalRightBottom.y) {
                         JSONObject queryResponse = new JSONObject();
                         queryResponse.put("success", false);
-                        queryResponse.put("result", null);
+//                        queryResponse.put("result", null);
                         queryResponse.put("errorCode", 1002);
                         queryResponse.put("errorMsg", "参数值无效或缺失必填参数");
                         System.out.println(queryResponse);
@@ -232,7 +232,9 @@ public class PosSpacialSearchWs {
 
                 //统计查询Aggregator
                 aggregator = null;
-                if (!groupId.equals("null")) {
+                if (groupId.equals("count")) {
+                    aggregator = new Aggregator<>(schema, "jzlx", new AggregateField(new Count(), "nums"));
+                }else if (!groupId.equals("count") && !groupId.equals("null")) {
                     aggregator = new Aggregator<>(schema, "hphm", new AggregateField(new Count(), "nums"));
                 }
                 GeoTemporalQueryRequest queryRequest = new GeoTemporalQueryRequest<>(xLow, xHigh, yLow, yHigh,
@@ -248,15 +250,21 @@ public class PosSpacialSearchWs {
 //                    System.out.println(tuples.size());
                     queryResult = new JSONArray();
                     JSONObject jsonFromTuple = null;
-                    if (groupId.equals("hour") || groupId.equals("min")) {
-                        float aveTime;
-                        if (groupId.equals("min")) {
-                            aveTime = (endTime - startTime) / (1000 * 60);
-                        } else {
-                            aveTime = (endTime - startTime) / (1000 * 60 * 60);
+                    if (!groupId.equals("null")) {
+                        float nums;
+                        if (groupId.equals("hour") || groupId.equals("min")){
+
+                            float aveTime;
+                            if (groupId.equals("min")) {
+                                aveTime = (endTime - startTime) / (1000 * 60);
+                            } else {
+                                aveTime = (endTime - startTime) / (1000 * 60 * 60);
+                            }
+                            if (aveTime == 0) aveTime = 1;
+                            nums = tuples.size() / aveTime;
+                        }else {
+                            nums = tuples.size();
                         }
-                        if (aveTime == 0) aveTime = 1;
-                        float nums = tuples.size() / aveTime;
                         jsonFromTuple = new JSONObject();
                         jsonFromTuple.put("nums", nums);
                         queryResult.add(jsonFromTuple);
@@ -290,11 +298,11 @@ public class PosSpacialSearchWs {
                 }
                 queryResponse.put("success", true);
                 queryResponse.put("result", queryResult);
-                queryResponse.put("errorCode", null);
-                queryResponse.put("errorMsg", null);
+//                queryResponse.put("errorCode", null);
+//                queryResponse.put("errorMsg", null);
             }else{
                 queryResponse.put("success", false);
-                queryResponse.put("result", null);
+//                queryResponse.put("result", null);
                 queryResponse.put("errorCode","1001");
                 queryResponse.put("errorMsg", "参数解析失败，参数格式存在问题");
             }
@@ -304,7 +312,7 @@ public class PosSpacialSearchWs {
             e.printStackTrace();
             JSONObject queryResponse = new JSONObject();
             queryResponse.put("success", false);
-            queryResponse.put("result", null);
+//            queryResponse.put("result", null);
             queryResponse.put("errorCode", 1002);
             queryResponse.put("errorMsg", "参数值无效或缺失必填参数22");
             String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);
@@ -313,7 +321,7 @@ public class PosSpacialSearchWs {
             e.printStackTrace();
             JSONObject queryResponse = new JSONObject();
             queryResponse.put("success", false);
-            queryResponse.put("result", null);
+//            queryResponse.put("result", null);
             queryResponse.put("errorCode", 1002);
             queryResponse.put("errorMsg", "参数值无效或缺失必填参数33");
             String result = JSONObject.toJSONString(queryResponse, SerializerFeature.WriteMapNullValue);

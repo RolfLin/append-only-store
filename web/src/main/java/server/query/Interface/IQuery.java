@@ -1,4 +1,4 @@
-package sentosa.query.Interface;
+package server.query.Interface;
 
 import java.util.Calendar;
 import java.util.Collection;

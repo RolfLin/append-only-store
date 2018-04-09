@@ -75,7 +75,7 @@ public class InputStreamKafkaReceiverBoltServer extends InputStreamReceiverBolt 
 //                }
                 executor.shutdown();
                 try {
-                    executor.awaitTermination(100000, TimeUnit.MILLISECONDS);
+                    executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -114,12 +114,12 @@ public class InputStreamKafkaReceiverBoltServer extends InputStreamReceiverBolt 
 
         @Override
         public void run() {
-            while (true) {
-                try {
-                    consumer.subscribe(topics);
+            try {
+                consumer.subscribe(topics);
+                while (true) {
 //                    System.out.println("topics : " + topics);
-                    // the consumer whill bolck until the records coming
-                    ConsumerRecords<String, String> records = consumer.poll(1000);
+                    // the consumer will block until the records coming
+                    ConsumerRecords<String, String> records = consumer.poll(Long.MAX_VALUE);
                     //                    System.out.println("records.count : " + records.count());
 
                     for (ConsumerRecord<String, String> record : records) {
@@ -131,30 +131,30 @@ public class InputStreamKafkaReceiverBoltServer extends InputStreamReceiverBolt 
 //                            System.out.println(record.value());
 //                            total++;
 //                        }
-                        try{
+                        try {
                             JSONObject jsonFromData = JSONObject.parseObject(record.value());
 //                            System.out.println(record.value());
                             boolean checkRecord = kafkaDataSchema.checkDataIntegrity(jsonFromData);
-                            if(checkRecord){ // filter incomplete data
+                            if (checkRecord) { // filter incomplete data
                                 DataTuple dataTuple = schema.getTupleFromJsonObject(jsonFromData);
-                                if(dataTuple != null){
+                                if (dataTuple != null) {
                                     getInputQueue().put(dataTuple);
 //                                    System.out.println("Filter datatuple success: " + record.value());
                                 }
                             }
-                        } catch (ParseException e){
+                        } catch (ParseException e) {
                             e.printStackTrace();
                             continue;
-                        } catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                             System.out.println("Record error : Json format exception!The json is " + record.value());
 //                            e.printStackTrace();
                             continue;
-                        } catch (NullPointerException e){
+                        } catch (NullPointerException e) {
                             System.out.println("Record error : Some json attribute is null!!The json is " + record.value());
 //                            e.printStackTrace();
                             continue;
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             System.out.println("Record error : Unexpected Exception,Consumer record wrong!The json is " + record.value());
 //                            e.printStackTrace();
                             continue;
@@ -170,18 +170,20 @@ public class InputStreamKafkaReceiverBoltServer extends InputStreamReceiverBolt 
                     //                        JsonParser parser = new JsonParser();
                     //                        JsonObject object = (JsonObject) parser.parse(record.value());
                     //                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                } catch (WakeupException e) {
-                    System.out.println("Consumer poll stop!");
-                    e.printStackTrace();
-                    // break the loop here to avoid the extremely long waiting time in case of shutdown
-                    break;
-                    // ignore for shutdown
-                } catch (Exception e) {
-                    System.out.println("Consumer exception!");
-                    e.printStackTrace();
                 }
             }
-
+            catch (WakeupException e) {
+                System.out.println("Consumer poll stop!");
+                e.printStackTrace();
+                // break the loop here to avoid the extremely long waiting time in case of shutdown
+//                break;
+                // ignore for shutdown
+            } catch (Exception e) {
+                System.out.println("Consumer exception!");
+                e.printStackTrace();
+            }finally {
+                consumer.close();
+            }
         }
 
         public void shutdown() {

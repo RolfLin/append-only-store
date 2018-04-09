@@ -1,8 +1,8 @@
-package sentosa.query.naive;
+package server.query.naive;
 
-import sentosa.Utils.Utils;
-import sentosa.config.Config;
-import sentosa.query.Interface.*;
+import server.Utils.Utils;
+import server.config.Config;
+import server.query.Interface.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;

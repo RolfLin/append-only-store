@@ -34,7 +34,7 @@ public class KafkaSourceTest {
         Matcher m = p.matcher("[\"10.21.25.203:9092\",\"10.21.25.204:9092\",\"10.21.25.205:9092\"]");
         String currentKafkahost = m.replaceAll("").trim();
 //        IngestionKafkaBatchMode kafkaBatchMode = new IngestionKafkaBatchMode("10.21.25.203:9092,10.21.25.203:9092,10.21.25.203:9092", "gpis");
-        IngestionKafkaBatchMode kafkaBatchMode = new IngestionKafkaBatchMode("localhost:9092", "1514");
+        IngestionKafkaBatchMode kafkaBatchMode = new IngestionKafkaBatchMode("localhost:9092", "gpis");
         kafkaBatchMode.ingestProducer();
         LocationFile locationFile = new LocationFile();
         ArrayList<String> carDetailList = locationFile.read2("20170201.txt");
@@ -47,11 +47,11 @@ public class KafkaSourceTest {
         // generator the name by carID
 //        ArrayList<String>
 
-//        FrequencyRestrictor restrictor = new FrequencyRestrictor(1000, 5);
-//        RateTracker rateTracker = new RateTracker(1000, 5);
+        FrequencyRestrictor restrictor = new FrequencyRestrictor(10, 5);
+        RateTracker rateTracker = new RateTracker(1000, 5);
 
-        int batchSize = 1000;
-//        int batchSize = 2;
+//        int batchSize = 2000;
+        int batchSize = 10;
 
         Thread emittingThread = null;
         emittingThread = new Thread(() -> {
@@ -73,30 +73,31 @@ public class KafkaSourceTest {
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date date = formatter.parse(sDateTime); // 把String类型转换为Date类型
                         String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-                        if (i < ( batchSize / 5)) {
-//                        if (i < 5) {
+//                        if (i < ( batchSize / 5)) {
+                        if (i < 1) {
                                 Random random = new Random();
-                                int randomValue = random.nextInt(3) + 1;
-                                String Msg = "{\"devbtype\":" + getRandomDevbtype() + "," +
-                                        "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(randomValue),6) + "\"," +
-                                        "\"devid\":\"" + getRandomDevid() +
+//                                int randomValue = random.nextInt(3) + 1;
+                                int randomValue = 1;
+                                String Msg = "{\"devbtype\":" + 31 + "," +
+                                        "\"devstype\":\"" + getRandomCarDetial(carDetailList.get(1),6) + "\"," +
+                                        "\"devid\":\"" + "83696" +
 //                                    "\",\"city\":\"" + getRandomCity() +    // exchange the city value
-                                        "\",\"city\":\"" + getCityIDByName(carLocationList.get(randomValue),11) +   //exchange the city value
-                                        "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(randomValue),4) +
-                                        ",\"latitude\":" + getRandomCarLocation(carLocationList.get(randomValue),5)+ "," +
+                                        "\",\"city\":\"" + "4401" +   //exchange the city value
+                                        "\",\"longitude\":" + getRandomCarLocation(carLocationList.get(1),4) +
+                                        ",\"latitude\":" + getRandomCarLocation(carLocationList.get(1),5)+ "," +
 //                                    "\"altitude\":\"" + getRandomCarLocation(carLocationList.get(randomValue),6) + "\"," +
-                                        "\"speed\":\"" + getRandomCarLocation(carLocationList.get(randomValue),7) + "\","+
-                                        "\"direction\":\"" + getRandomCarLocation(carLocationList.get(randomValue),8) +
-                                        "\",\"locationtime\":\"" + getRandomCarLocation(carLocationList.get(randomValue),3) +
+                                        "\"speed\":\"" + getRandomCarLocation(carLocationList.get(1),7) + "\","+
+                                        "\"direction\":\"" + getRandomCarLocation(carLocationList.get(1),8) +
+                                        "\",\"locationtime\":\"" + getRandomCarLocation(carLocationList.get(1),3) +
                                         "\",\"workstate\":\"" + getRandomWorkstate() + "\"," +
-                                        "\"hphm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),2) +
+                                        "\"hphm\":\"" + getRandomCarDetial(carDetailList.get(1),2) +
                                         "\",\"jzlx\":\"" + getRandomJzlx() +
-                                        "\",\"jybh\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"," +
-                                        "\"jymc\":\"" + nameList.get(randomValue) +
+                                        "\",\"jybh\":\"" + getRandomCarDetial(carDetailList.get(1),8) + "\"," +
+                                        "\"jymc\":\"" + nameList.get(1) +
                                         "\",\"reserve1\":\"" + getRandomReserve1() +
-                                        "\",\"ssdwdm\":\"" + getRandomCarDetial(carDetailList.get(randomValue),3)+
+                                        "\",\"ssdwdm\":\"" + getRandomCarDetial(carDetailList.get(1),3)+
                                         "\",\"ssdwmc\":\"a\"," +
-                                        "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(randomValue),8) + "\"}";
+                                        "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(1),8) + "\"}";
                                 System.out.println(Msg);
                                 kafkaBatchMode.send(i, Msg);
                             } else {
@@ -162,8 +163,8 @@ public class KafkaSourceTest {
                     //            producer.close();
                     System.out.println("Kafka Producer send msg over,cost time:" + (System.currentTimeMillis() - start) + "ms");
 
-//                    Thread.sleep(3600 * 30 * 1000);
-                    Thread.sleep(1000);
+                    Thread.sleep(1800 * 1000);
+//                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

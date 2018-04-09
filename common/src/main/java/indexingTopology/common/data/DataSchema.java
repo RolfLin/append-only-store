@@ -437,7 +437,7 @@ public class DataSchema implements Serializable {
                 String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
                 jsonObject.put(getFieldName(i), currentTime);
             }
-            else{
+            else if (tuple.get(i) != null){
                 jsonObject.put(getFieldName(i), tuple.get(i));
             }
         }
@@ -465,12 +465,12 @@ public class DataSchema implements Serializable {
                 jsonObject.put(getFieldName(i), currentTime);
             } else if(options != null || options.equals("null")){
                 for(String option : options){
-                    if(option.equals(getFieldName(i))){
+                    if(option.equals(getFieldName(i)) && tuple.get(i) != null){
                         jsonObject.put(getFieldName(i),tuple.get(i));
                         break;
                     }
                 }
-            } else {
+            } else if (tuple.get(i) != null){
                 jsonObject.put(getFieldName(i), tuple.get(i));
             }
         }

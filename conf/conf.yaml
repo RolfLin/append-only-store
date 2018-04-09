@@ -16,7 +16,7 @@
  old.data.previous.time: 24
 
 # default topic for kafka
- topic: "1514"
+ topic: "gpis"
 
 # default zookeeperIP for kafka
 # ZKhost: ["Slave2:2181","Slave3:2181"]
@@ -35,4 +35,4 @@
 
 # the hdfs host. This value can be omitted when strage.file.system is local.
 # the host generally can be obtained by ./hdsf getconf --confKey fs.default.name
- hdfs.host: "hdfs://localhost:9000/"
+ hdfs.host: "hdfs://localhost:8866/"

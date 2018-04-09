@@ -1,3 +1,0 @@
-package sentosa.query.Interface;
-
-

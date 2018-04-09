@@ -1,4 +1,4 @@
-package sentosa.Utils;
+package server.Utils;
 
 /**
  * Created by robert on 29/12/16.
