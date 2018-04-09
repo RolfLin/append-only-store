@@ -100,6 +100,10 @@ public class KafkaSourceTest {
                                         "\"teamno\":\"" + getRandomCarDetial(carDetailList.get(1),8) + "\"}";
 //                                System.out.println(Msg);
 //                                kafkaBatchMode.send(i, Msg);
+                            System.out.println();
+                            System.out.println();
+                            System.out.println();
+                            System.out.println();
                             } else {
                                 Random random = new Random();
                                 int randomValue = random.nextInt(5000) + 1;
