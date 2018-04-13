@@ -3518,7 +3518,7 @@ if (typeof module == "object" && typeof require == "function") {
 /*jslint eqeqeq: false, onevar: false, regexp: false, plusplus: false*/
 /*global module, require, window*/
 /**
- * The Sinon "server" mimics a web server that receives requests from
+ * The Sinon "indexingTopology.util.server" mimics a web indexingTopology.util.server that receives requests from
  * sinon.FakeXMLHttpRequest and provides an API to respond to those requests,
  * both synchronously and asynchronously. To respond synchronuously, canned
  * answers have to be provided upfront.
@@ -3550,7 +3550,7 @@ sinon.fakeServer = (function () {
         }
 
         if (typeof response[2] != "string") {
-            throw new TypeError("Fake server response body should be string, but was " +
+            throw new TypeError("Fake indexingTopology.util.server response body should be string, but was " +
                                 typeof response[2]);
         }
 
@@ -3710,7 +3710,7 @@ sinon.fakeServer = (function () {
                     request.respond(response[0], response[1], response[2]);
                 }
             } catch (e) {
-                sinon.logError("Fake server request processing", e);
+                sinon.logError("Fake indexingTopology.util.server request processing", e);
             }
         },
 

@@ -57,7 +57,7 @@ npm install jquery-mousewheel
 npm install jquery-browserify
 ```
 
-In your server-side node.js code:
+In your indexingTopology.util.server-side node.js code:
 
 ```js
 var express = require('express');

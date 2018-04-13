@@ -7,7 +7,7 @@
 # the path where the metadata will be stored
  metadata.local.storage.path: "metadata"
 # default file system for storage: hdfs/local.
- storage.file.system: "local"
+ storage.file.system: "hdfs"
 
 # default time to remove old data
  remove.interval.hours: 6
@@ -25,15 +25,15 @@
 # kafkaHost: ["68.28.7.80:9092","68.2.6.194:9092","68.28.6.195:9092"]
 
 
- ZKhost: ["10.21.25.188:2181"]
+ ZKhost: ["10.21.25.66:2181"]
 
 # default kafkaHost for kafka
 # kafkaHost: ["Slave2:9092","Slave3:9092"]
 # kafkaHost: ["10.21.25.40:9092"]
 # kafkaHost: ["68.28.7.80:9092","68.28.6.194:9092","68.28.6.195:9092"]
- kafkaHost: ["10.21.25.188:9092"]
+ kafkaHost: ["10.21.25.66:9092"]
 
 # the hdfs host. This value can be omitted when strage.file.system is local.
 # the host generally can be obtained by ./hdsf getconf --confKey fs.default.name
 # hdfs.host: "hdfs://10.21.25.40:9000/"
- hdfs.host: "hdfs://10.21.25.188:8020/"
+ hdfs.host: "hdfs://10.21.25.66:8020/"

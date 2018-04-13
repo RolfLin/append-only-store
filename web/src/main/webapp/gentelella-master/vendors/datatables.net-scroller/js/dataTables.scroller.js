@@ -861,7 +861,7 @@ $.extend( Scroller.prototype, {
 			 typeof this.s.dt.oLoadedState.iScroller != 'undefined' )
 		{
 			// A quirk of DataTables is that the draw callback will occur on an
-			// empty set if Ajax sourced, but not if server-side processing.
+			// empty set if Ajax sourced, but not if indexingTopology.util.server-side processing.
 			var ajaxSourced = (this.s.dt.sAjaxSource || that.s.dt.ajax) && ! this.s.dt.oFeatures.bServerSide ?
 				true :
 				false;

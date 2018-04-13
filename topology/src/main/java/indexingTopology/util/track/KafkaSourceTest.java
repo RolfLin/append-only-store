@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class KafkaSourceTest {
 
     @Option(name = "--ingest-rate-limit", aliases = {"-r"}, usage = "max ingestion rate")
-    private int MaxIngestRate = 10;
+    private int MaxIngestRate = 2;
 
     @Option(name = "--ingest-server-ip", usage = "the ingest server ip")
     private String IngestServerIp = "localhost";
@@ -90,7 +90,7 @@ public class KafkaSourceTest {
 //                                    "\"ssdwmc\":\"广州市\",\"teamno\":\"44010001\"}";
 //                            String   Msg = "{\"devbtype\":" + 10 + ",\"devstype\":\"123\"}";
 //                            System.out.println(currentTime);
-                        System.out.println(Msg);
+//                        System.out.println(Msg);
                             kafkaBatchMode.send(i, Msg);
                         }
                         //                        this.producer.send(new ProducerRecord<String, String>("consumer",

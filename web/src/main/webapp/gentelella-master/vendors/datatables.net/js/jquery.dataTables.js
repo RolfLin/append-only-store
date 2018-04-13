@@ -3804,7 +3804,7 @@
 	 * parameters can have multiple forms, and backwards compatibility.
 	 *
 	 * @param {object} oSettings dataTables settings object
-	 * @param {array} data Data to send to the server, required by
+	 * @param {array} data Data to send to the indexingTopology.util.server, required by
 	 *     DataTables - may be augmented by developer callbacks
 	 * @param {function} fn Callback function to run when data is obtained
 	 */
@@ -3814,7 +3814,7 @@
 		_fnCallbackFire( oSettings, 'aoServerParams', 'serverParams', [data] );
 	
 		// Convert to object based for 1.10+ if using the old array scheme which can
-		// come from server-side processing or serverParams
+		// come from indexingTopology.util.server-side processing or serverParams
 		if ( data && $.isArray(data) ) {
 			var tmp = {};
 			var rbracket = /(.*?)\[\]$/;
@@ -3962,7 +3962,7 @@
 	
 	
 	/**
-	 * Build up the parameters in an object needed for a server-side processing
+	 * Build up the parameters in an object needed for a indexingTopology.util.server-side processing
 	 * request. Note that this is basically done twice, is different ways - a modern
 	 * method which is used by default in DataTables 1.10 which uses objects and
 	 * arrays, or the 1.9- method with is name / value pairs. 1.9 method is used if
@@ -4127,7 +4127,7 @@
 	 * `_fnGetObjectDataFn` allows the data to be sourced from a property of the
 	 * source object, or from a processing function.
 	 *  @param {object} oSettings dataTables settings object
-	 *  @param  {object} json Data source object / array from the server
+	 *  @param  {object} json Data source object / array from the indexingTopology.util.server
 	 *  @return {array} Array of data to use
 	 */
 	function _fnAjaxDataSrc ( oSettings, json )
@@ -4742,7 +4742,7 @@
 	/**
 	 * Draw the table for the first time, adding all required features
 	 *  @param {object} oSettings dataTables settings object
-	 *  @param {object} [json] JSON from the server that completed the table, if using Ajax source
+	 *  @param {object} [json] JSON from the indexingTopology.util.server that completed the table, if using Ajax source
 	 *    with client-side processing (optional)
 	 *  @memberof DataTable#oApi
 	 */
@@ -5916,7 +5916,7 @@
 			_fnSortData( oSettings, sortCol.col );
 		}
 	
-		/* No sorting required if server-side or no sorting array */
+		/* No sorting required if indexingTopology.util.server-side or no sorting array */
 		if ( _fnDataSource( oSettings ) != 'ssp' && aSort.length !== 0 )
 		{
 			// Create a value - key array of the current row positions such that we can use their
@@ -6165,7 +6165,7 @@
 				setTimeout( function() {
 					_fnSortListener( settings, colIdx, e.shiftKey, callback );
 	
-					// In server-side processing, the draw callback will remove the
+					// In indexingTopology.util.server-side processing, the draw callback will remove the
 					// processing display
 					if ( _fnDataSource( settings ) !== 'ssp' ) {
 						_fnProcessingDisplay( settings, false );
@@ -7744,7 +7744,7 @@
 			page   = opts.page;    // all, current
 	
 		if ( _fnDataSource( settings ) == 'ssp' ) {
-			// In server-side processing mode, most options are irrelevant since
+			// In indexingTopology.util.server-side processing mode, most options are irrelevant since
 			// rows not shown don't exist and the index order is the applied order
 			// Removed is a special case - for consistency just return an empty
 			// array
@@ -10437,7 +10437,7 @@
 	
 	
 		/**
-		 * Configure DataTables to use server-side processing. Note that the
+		 * Configure DataTables to use indexingTopology.util.server-side processing. Note that the
 		 * `ajax` parameter must also be given in order to give DataTables a
 		 * source to obtain the required data for each draw.
 		 *  @type boolean
@@ -10742,7 +10742,7 @@
 		 * since that is obtained using an async XHR call.
 		 *  @type function
 		 *  @param {object} settings DataTables settings object
-		 *  @param {object} json The JSON object request from the server - only
+		 *  @param {object} json The JSON object request from the indexingTopology.util.server - only
 		 *    present if client-side Ajax sourced data is used
 		 *
 		 *  @dtopt Callbacks
@@ -11063,7 +11063,7 @@
 	
 	
 		/**
-		 * When enabled DataTables will not make a request to the server for the first
+		 * When enabled DataTables will not make a request to the indexingTopology.util.server for the first
 		 * page draw - rather it will use the data already on the page (no sorting etc
 		 * will be applied to it), thus saving on an XHR at load time. `deferLoading`
 		 * is used to indicate that deferred loading is required, but it is also used
@@ -11563,7 +11563,7 @@
 			 * When using Ajax sourced data and during the first draw when DataTables is
 			 * gathering the data, this message is shown in an empty row in the table to
 			 * indicate to the end user the the data is being loaded. Note that this
-			 * parameter is not used when loading data by server-side processing, just
+			 * parameter is not used when loading data by indexingTopology.util.server-side processing, just
 			 * Ajax sourced data with client-side processing.
 			 *  @type string
 			 *  @default Loading...
@@ -11652,7 +11652,7 @@
 	
 			/**
 			 * All of the language information can be stored in a file on the
-			 * server-side, which DataTables will look up if this parameter is passed.
+			 * indexingTopology.util.server-side, which DataTables will look up if this parameter is passed.
 			 * It must store the URL of the language file, which is in a JSON format,
 			 * and the object has the same properties as the oLanguage object in the
 			 * initialiser object (i.e. the above parameters). Please refer to one of
@@ -11728,7 +11728,7 @@
 		 *
 		 * By default DataTables will look for the property `data` (or `aaData` for
 		 * compatibility with DataTables 1.9-) when obtaining data from an Ajax
-		 * source or for server-side processing - this parameter allows that
+		 * source or for indexingTopology.util.server-side processing - this parameter allows that
 		 * property to be changed. You can use Javascript dotted object notation to
 		 * get a data source for multiple levels of nesting.
 		 *  @type string
@@ -11940,7 +11940,7 @@
 		 * __Deprecated__ The functionality provided by this parameter has now been
 		 * superseded by that provided through `ajax`, which should be used instead.
 		 *
-		 * Set the HTTP method that is used to make the Ajax call for server-side
+		 * Set the HTTP method that is used to make the Ajax call for indexingTopology.util.server-side
 		 * processing or Ajax sourced data.
 		 *  @type string
 		 *  @default GET
@@ -12894,7 +12894,7 @@
 			 * Delay the creation of TR and TD elements until they are actually
 			 * needed by a driven page draw. This can give a significant speed
 			 * increase for Ajax source and Javascript source data, but makes no
-			 * difference at all fro DOM and server-side processing tables.
+			 * difference at all fro DOM and indexingTopology.util.server-side processing tables.
 			 * Note that this parameter will be set by the initialisation routine. To
 			 * set a default use {@link DataTable.defaults}.
 			 *  @type boolean
@@ -12940,7 +12940,7 @@
 	
 			/**
 			 * Processing indicator enable flag whenever DataTables is enacting a
-			 * user request - typically an Ajax request for server-side processing.
+			 * user request - typically an Ajax request for indexingTopology.util.server-side processing.
 			 * Note that this parameter will be set by the initialisation routine. To
 			 * set a default use {@link DataTable.defaults}.
 			 *  @type boolean
@@ -12949,7 +12949,7 @@
 	
 			/**
 			 * Server-side processing enabled flag - when enabled DataTables will
-			 * get all data from the server for every draw - there is no filtering,
+			 * get all data from the indexingTopology.util.server for every draw - there is no filtering,
 			 * sorting or paging done on the client-side.
 			 * Note that this parameter will be set by the initialisation routine. To
 			 * set a default use {@link DataTable.defaults}.
@@ -13350,7 +13350,7 @@
 		"nTableWrapper": null,
 	
 		/**
-		 * Indicate if when using server-side processing the loading of data
+		 * Indicate if when using indexingTopology.util.server-side processing the loading of data
 		 * should be deferred until the second draw.
 		 * Note that this parameter will be set by the initialisation routine. To
 		 * set a default use {@link DataTable.defaults}.
@@ -13462,7 +13462,7 @@
 	
 		/**
 		 * Property from a given object from which to read the table data from. This
-		 * can be an empty string (when not server-side processing), in which case
+		 * can be an empty string (when not indexingTopology.util.server-side processing), in which case
 		 * it is  assumed an an array is given directly.
 		 * Note that this parameter will be set by the initialisation routine. To
 		 * set a default use {@link DataTable.defaults}.
@@ -13478,7 +13478,7 @@
 		"bAjaxDataGet": true,
 	
 		/**
-		 * The last jQuery XHR object that was used for server-side data gathering.
+		 * The last jQuery XHR object that was used for indexingTopology.util.server-side data gathering.
 		 * This can be used for working with the XHR information in one of the
 		 * callbacks
 		 *  @type object
@@ -13487,7 +13487,7 @@
 		"jqXHR": null,
 	
 		/**
-		 * JSON returned from the server in the last Ajax request
+		 * JSON returned from the indexingTopology.util.server in the last Ajax request
 		 *  @type object
 		 *  @default undefined
 		 */
@@ -13501,7 +13501,7 @@
 		"oAjaxData": undefined,
 	
 		/**
-		 * Function to get the server-side data.
+		 * Function to get the indexingTopology.util.server-side data.
 		 * Note that this parameter will be set by the initialisation routine. To
 		 * set a default use {@link DataTable.defaults}.
 		 *  @type function
@@ -13510,7 +13510,7 @@
 	
 		/**
 		 * Functions which are called prior to sending an Ajax request so extra
-		 * parameters can easily be sent to the server
+		 * parameters can easily be sent to the indexingTopology.util.server
 		 *  @type array
 		 *  @default []
 		 */
@@ -13544,7 +13544,7 @@
 	
 		/**
 		 * Counter for the draws that the table does. Also used as a tracker for
-		 * server-side processing
+		 * indexingTopology.util.server-side processing
 		 *  @type int
 		 *  @default 0
 		 */
@@ -13582,7 +13582,7 @@
 		 * Server-side processing - number of records in the result set
 		 * (i.e. before filtering), Use fnRecordsTotal rather than
 		 * this property to get the value of the number of records, regardless of
-		 * the server-side processing setting.
+		 * the indexingTopology.util.server-side processing setting.
 		 *  @type int
 		 *  @default 0
 		 *  @private
@@ -13593,7 +13593,7 @@
 		 * Server-side processing - number of records in the current display set
 		 * (i.e. after filtering). Use fnRecordsDisplay rather than
 		 * this property to get the value of the number of records, regardless of
-		 * the server-side processing setting.
+		 * the indexingTopology.util.server-side processing setting.
 		 *  @type boolean
 		 *  @default 0
 		 *  @private
@@ -13989,7 +13989,7 @@
 		 */
 		legacy: {
 			/**
-			 * Enable / disable DataTables 1.9 compatible server-side processing
+			 * Enable / disable DataTables 1.9 compatible indexingTopology.util.server-side processing
 			 * requests
 			 *
 			 *  @type boolean
@@ -15154,7 +15154,7 @@
 	 *  @event
 	 *  @param {event} e jQuery event object
 	 *  @param {object} oSettings DataTables settings object
-	 *  @param {object} json The JSON object request from the server - only
+	 *  @param {object} json The JSON object request from the indexingTopology.util.server - only
 	 *    present if client-side Ajax sourced data is used</li></ol>
 	 */
 

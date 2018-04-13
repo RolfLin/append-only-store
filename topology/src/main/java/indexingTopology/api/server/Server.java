@@ -68,7 +68,7 @@ public class Server<T extends ServerHandle> {
         }
         executor.shutdownNow();
         if (serverSocket == null) {
-            System.err.println("Cannot create server on port after having retried for 30 seconds.");
+            System.err.println("Cannot create indexingTopology.util.server on port after having retried for 30 seconds.");
             return;
         }
 

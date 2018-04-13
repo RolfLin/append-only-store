@@ -227,7 +227,7 @@ $.extend( KeyTable.prototype, {
 		// well (which is different from how client-side processing works).
 		dt.on( 'xhr.keyTable', function ( e ) {
 			if ( that.s.focusDraw ) {
-				// Triggered by server-side processing, and thus `_focus` will
+				// Triggered by indexingTopology.util.server-side processing, and thus `_focus` will
 				// do the refocus on the next draw event
 				return;
 			}
@@ -413,7 +413,7 @@ $.extend( KeyTable.prototype, {
 				.indexes()
 				.indexOf( index.row );
 
-			// For server-side processing normalise the row by adding the start
+			// For indexingTopology.util.server-side processing normalise the row by adding the start
 			// point, since `rows().indexes()` includes only rows that are
 			// available at the client-side
 			if ( pageInfo.serverSide ) {
@@ -442,7 +442,7 @@ $.extend( KeyTable.prototype, {
 			return;
 		}
 
-		// De-normalise the server-side processing row, so we select the row
+		// De-normalise the indexingTopology.util.server-side processing row, so we select the row
 		// in its displayed position
 		if ( pageInfo.serverSide ) {
 			row -= pageInfo.start;
@@ -651,7 +651,7 @@ $.extend( KeyTable.prototype, {
 			.indexes()
 			.indexOf( currentCell.index().row );
 
-		// When server-side processing, `rows().indexes()` only gives the rows
+		// When indexingTopology.util.server-side processing, `rows().indexes()` only gives the rows
 		// that are available at the client-side, so we need to normalise the
 		// row's current position by the display start point
 		if ( pageInfo.serverSide ) {

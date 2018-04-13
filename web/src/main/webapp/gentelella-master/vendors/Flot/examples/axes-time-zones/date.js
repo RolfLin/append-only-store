@@ -34,7 +34,7 @@
  */
 (function () {
   // Standard initialization stuff to make sure the library is
-  // usable on both client and server (node) side.
+  // usable on both client and indexingTopology.util.server (node) side.
 
   var root = this;
 
