@@ -1,18 +1,19 @@
-package server.rest;
+package indexingTopology.util.server.rest;//package server.rest;
 
 
-
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import indexingTopology.util.server.compress.GZIPUtils;
+import indexingTopology.util.track.PosNonSpacialSearchWs;
 import indexingTopology.util.track.PosSpacialSearchWs;
-import server.compress.GZIPUtils;
-import server.query.naive.NaiveQueryImpl;
+import indexingTopology.util.track.TrackPagedSearchWs;
+import indexingTopology.util.track.TrackSearchWs;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 
-/**
- * Created by robert on 28/12/16.
- */
+
 @Path("admin_message")
 public class AdminMessage {
     @POST
@@ -20,13 +21,13 @@ public class AdminMessage {
     @Consumes(MediaType.TEXT_PLAIN)
     public String setWainingMessage(
             @FormParam("message") String message) {
-        NaiveQueryImpl.instance().setAdminMessage(message);
+        System.out.println(message);
         return "Success!";
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getWarningMessage(@DefaultValue("null") @QueryParam("message") String message) throws IOException {
+    public String getWarningMessage(@DefaultValue("null") @QueryParam("message") String message, @QueryParam("businessParams") String businessParams ) {
         String str = message.replace('[','{');
         str = str.replace(']','}');
 
@@ -52,7 +53,6 @@ public class AdminMessage {
 //            return jsonObject.toString();
 
 //        } else {
-        NaiveQueryImpl.instance().setAdminMessage(message);
         System.out.println(result);
 //        System.out.println(GZIPUtils.CompressToBase64(result));
 //        System.out.println("ssssss" + result.length());

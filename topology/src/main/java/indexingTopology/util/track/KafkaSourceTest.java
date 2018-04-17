@@ -162,7 +162,7 @@ public class KafkaSourceTest {
                     //            producer.close();
                     System.out.println("Kafka Producer send msg over,cost time:" + (System.currentTimeMillis() - start) + "ms");
 
-                    Thread.sleep(1800 * 1000);
+                    Thread.sleep( 1000);
 //                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -176,7 +176,8 @@ public class PosSpacialSearchWs {
                         flag = false;
                         break;
                     }
-                    double circleRadius = Double.parseDouble(circleradius);
+                    double circleRadiusTmp = Double.parseDouble(circleradius);
+                    double circleRadius = LatLngUtils.getRadiusLatLng(circleRadiusTmp);
                     if (groupId.equals("hour") || groupId.equals("min")) {
                         circleRadius += 10;
                     }
